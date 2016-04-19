@@ -45,7 +45,7 @@
 
 - (id)initWithSize:(NSSize)theDrawingSize {
    self = [super init];
-   if( self ) {
+   if (self) {
        settings = nil;
        tools = nil;
       //settings = [Settings instance];

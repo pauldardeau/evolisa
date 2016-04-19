@@ -21,9 +21,9 @@
    const int rc = setpriority(PRIO_PROCESS, 0, 10);
    
    if (rc == 0) {
-      NSLog( @"EvoLisa dropped priority, nice setting increased" );
+      NSLog(@"EvoLisa dropped priority, nice setting increased");
    } else {
-      NSLog( @"EvoLisa: error -- unable to drop priority" );
+      NSLog(@"EvoLisa: error -- unable to drop priority");
    }
      */
 }

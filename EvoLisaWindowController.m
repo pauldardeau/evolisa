@@ -63,7 +63,7 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
     vector unsigned char *unaligned_input; 
 	
     unaligned_input = (vector unsigned char *) input; 
-    perm = vec_lvsl( 0, input ); /* alignment amount */ 
+    perm = vec_lvsl(0, input); /* alignment amount */
     for (int i = 0; i < 16; ++i) {
 		output[i] = vec_perm(unaligned_input[i], 
                              unaligned_input[i+1],
@@ -85,7 +85,7 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
 
 - (void)awakeFromNib {
    self.userHomeDir = NSHomeDirectory();
-   usingOpenGL = YES;
+   usingOpenGL = NO;
     
    NSString* sourceImageDir = [NSString stringWithFormat:@"%@/paintings/",
                                self.userHomeDir];
@@ -254,7 +254,7 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
 //******************************************************************************
 
 - (IBAction)generateButtonClicked:(id)sender {
-   NSLog( @"generate clicked" );
+   NSLog(@"generate clicked");
    isRunning = YES;
    [stopButton setEnabled:YES];
    [generateButton setEnabled:NO];
@@ -375,7 +375,7 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
       fgets(lineBuffer, 2047, f);
       sscanf(lineBuffer, "generation=%d\n", &fileGeneration);
 
-      fgets(lineBuffer, 2047, f );
+      fgets(lineBuffer, 2047, f);
       sscanf(lineBuffer, "polygonCount=%d\n", &filePolygonCount);
       const int numPolygons = filePolygonCount;
       
@@ -406,10 +406,10 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
             if (numPoints > 0) {
                listPoints = [[NSMutableArray alloc] initWithCapacity:numPoints];
                
-               pszCurrent = strchr( lineBuffer, ';' ) + 1;
+               pszCurrent = strchr(lineBuffer, ';') + 1;
                sscanf(pszCurrent, "r=%d,g=%d,b=%d,a=%d",
                       &red, &green, &blue, &alpha);
-               pszCurrent = strchr( pszCurrent, ';' ) + 1;
+               pszCurrent = strchr(pszCurrent, ';') + 1;
                
                polygon = [[DnaPolygon alloc] initWithSize:drawingSize];
                
@@ -513,7 +513,7 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
 //******************************************************************************
 
 - (void)performTermination {
-   NSLog( @"auto-saving file at termination" );
+   NSLog(@"auto-saving file at termination");
    [self saveButtonClicked:nil];
 }
 
@@ -816,15 +816,14 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
                fitness += colorPixelFitness;
                ++rgba;
            }
-       } else if( 2 == samplesPerPixel ) {
+       } else if (2 == samplesPerPixel) {
            
-       } else if( 1 == samplesPerPixel ) {
+       } else if (1 == samplesPerPixel) {
            
        }
 		
        /*
-      for( int col = 0; col < sourceImageWidth; ++col )
-      {
+      for (int col = 0; col < sourceImageWidth; ++col) {
 		  NSColor* generatedPixelColor = [imageRep colorAtX:col y:row];
 		  [generatedPixelColor getRed:&red green:&green blue:&blue alpha:&alpha];
 		  
@@ -840,7 +839,7 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
       
 #ifdef USE_BAIL_EARLY
       if (haveAFitnessScore && (fitness > bestFitnessSoFar)) {
-         //NSLog( @"--- bailing early" );
+         //NSLog(@"--- bailing early");
          earlyBreak = YES;
          break;
       }
@@ -903,7 +902,7 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
        [lblFitnessValue setNeedsDisplay:YES];
        [lblGeneration setNeedsDisplay:YES];
        
-      //NSLog( @"*** fit = %lld, gen=%d", fitness, selected );
+      //NSLog(@"*** fit = %lld, gen=%d", fitness, selected);
       
        //TODO: this is not right for OpenGL - only use for Cocoa
       if (!usingOpenGL) {
