@@ -77,327 +77,327 @@ static Settings* instance = nil;
 //******************************************************************************
 
 + (Settings*)instance {
-   if (instance == nil) {
-      instance = [[Settings alloc] init];
-   }
+    if (instance == nil) {
+        instance = [[Settings alloc] init];
+    }
    
-   return instance;
+    return instance;
 }
 
 //******************************************************************************
 
 - (id)init {
-   if ((self = [super init]) != nil) {
-      activeAddPointMutationRate = 750;
-      activeAddPolygonMutationRate = 700;
-      activeAlphaMutationRate = 750;
-      activeAlphaRangeMax = MAX_ALPHA;
-      activeAlphaRangeMin = MIN_ALPHA;
-      activeBlueMutationRate = 750;
-      activeBlueRangeMin = MIN_COLOR_INTENSITY;
-      activeBlueRangeMax = MAX_COLOR_INTENSITY;
-      activeGreenMutationRate = 750;
-      activeGreenRangeMin= MIN_COLOR_INTENSITY;
-      activeGreenRangeMax = MAX_COLOR_INTENSITY;
-      activeMovePointMaxMutationRate = 750;
-      activeMovePointMidMutationRate = 750;
-      activeMovePointMinMutationRate = 750;
+    if ((self = [super init]) != nil) {
+        activeAddPointMutationRate = 750;
+        activeAddPolygonMutationRate = 700;
+        activeAlphaMutationRate = 750;
+        activeAlphaRangeMax = MAX_ALPHA;
+        activeAlphaRangeMin = MIN_ALPHA;
+        activeBlueMutationRate = 750;
+        activeBlueRangeMin = MIN_COLOR_INTENSITY;
+        activeBlueRangeMax = MAX_COLOR_INTENSITY;
+        activeGreenMutationRate = 750;
+        activeGreenRangeMin= MIN_COLOR_INTENSITY;
+        activeGreenRangeMax = MAX_COLOR_INTENSITY;
+        activeMovePointMaxMutationRate = 750;
+        activeMovePointMidMutationRate = 750;
+        activeMovePointMinMutationRate = 750;
 
-      activeMovePointRangeMid = 20;
-      activeMovePointRangeMin = 3;
-      activeMovePolygonMutationRate = 700;
-      activePointsMin = 0;
-      activePointsMax = 2000;
-      activePointsPerPolygonMax = 3;
-      activePointsPerPolygonMin = 3;
-      activePolygonsMin = MIN_POLYGONS;
-      activePolygonsMax = MAX_POLYGONS;
-      activeRedMutationRate = 750;
-      activeRedRangeMin = MIN_COLOR_INTENSITY;
-      activeRedRangeMax = MAX_COLOR_INTENSITY;
-      activeRemovePointMutationRate = 750;
-      activeRemovePolygonMutationRate = 750;
-      addPointMutationRate = 750;
+        activeMovePointRangeMid = 20;
+        activeMovePointRangeMin = 3;
+        activeMovePolygonMutationRate = 700;
+        activePointsMin = 0;
+        activePointsMax = 2000;
+        activePointsPerPolygonMax = 3;
+        activePointsPerPolygonMin = 3;
+        activePolygonsMin = MIN_POLYGONS;
+        activePolygonsMax = MAX_POLYGONS;
+        activeRedMutationRate = 750;
+        activeRedRangeMin = MIN_COLOR_INTENSITY;
+        activeRedRangeMax = MAX_COLOR_INTENSITY;
+        activeRemovePointMutationRate = 750;
+        activeRemovePolygonMutationRate = 750;
+        addPointMutationRate = 750;
       
-      addPolygonMutationRate = 700;
-      alphaMutationRate = 750;
-      alphaRangeMax = MAX_ALPHA;
-      alphaRangeMin = MIN_ALPHA;
-      blueMutationRate = 750;
-      blueRangeMin = MIN_COLOR_INTENSITY;
-      blueRangeMax = MAX_COLOR_INTENSITY;
-      greenMutationRate = 750;
-      greenRangeMin = MIN_COLOR_INTENSITY;
-      greenRangeMax = MAX_COLOR_INTENSITY;
-      movePointMaxMutationRate = 750;
-      movePointMidMutationRate = 750;
-      movePointMinMutationRate = 750;
-      movePointRangeMid = 20;
-      movePointRangeMin = 3;
-      movePolygonMutationRate = 700;
-      pointsMin = 0;
-      pointsMax = 2000;
-      pointsPerPolygonMax = 3;
-      pointsPerPolygonMin = 3;
-      polygonsMin = MIN_POLYGONS;
-      polygonsMax = MAX_POLYGONS;
-      redMutationRate = 750;
-      redRangeMin = MIN_COLOR_INTENSITY;
-      redRangeMax = MAX_COLOR_INTENSITY;
-      removePointMutationRate = 750;
-      removePolygonMutationRate = 700;
+        addPolygonMutationRate = 700;
+        alphaMutationRate = 750;
+        alphaRangeMax = MAX_ALPHA;
+        alphaRangeMin = MIN_ALPHA;
+        blueMutationRate = 750;
+        blueRangeMin = MIN_COLOR_INTENSITY;
+        blueRangeMax = MAX_COLOR_INTENSITY;
+        greenMutationRate = 750;
+        greenRangeMin = MIN_COLOR_INTENSITY;
+        greenRangeMax = MAX_COLOR_INTENSITY;
+        movePointMaxMutationRate = 750;
+        movePointMidMutationRate = 750;
+        movePointMinMutationRate = 750;
+        movePointRangeMid = 20;
+        movePointRangeMin = 3;
+        movePolygonMutationRate = 700;
+        pointsMin = 0;
+        pointsMax = 2000;
+        pointsPerPolygonMax = 3;
+        pointsPerPolygonMin = 3;
+        polygonsMin = MIN_POLYGONS;
+        polygonsMax = MAX_POLYGONS;
+        redMutationRate = 750;
+        redRangeMin = MIN_COLOR_INTENSITY;
+        redRangeMax = MAX_COLOR_INTENSITY;
+        removePointMutationRate = 750;
+        removePolygonMutationRate = 700;
       
-      activeColorChangeRate = 1000;
-      activeRotationRate = 1000;
-      activeTranslationRate = 1000;
-      activeFlipVerticalRate = 1000;
-      activeFlipHorizontalRate = 1000;
-      activeDoubleFlipRate = 1000;
+        activeColorChangeRate = 1000;
+        activeRotationRate = 1000;
+        activeTranslationRate = 1000;
+        activeFlipVerticalRate = 1000;
+        activeFlipHorizontalRate = 1000;
+        activeDoubleFlipRate = 1000;
 
-      [self reset];
-   }
+        [self reset];
+    }
    
-   return self;
+    return self;
 }
 
 //******************************************************************************
 
 - (void)setRedRangeMin:(int)value {
-   //TODO: setRedRangeMin
+    //TODO: setRedRangeMin
 }
 
 //******************************************************************************
 
 - (void)setRedRangeMax:(int)value {
-   //TODO: setRedRangeMax
+    //TODO: setRedRangeMax
 }
 
 //******************************************************************************
 
 - (void)setGreenRangeMin:(int)value {
-   //TODO: setGreenRangeMin
+    //TODO: setGreenRangeMin
 }
 
 //******************************************************************************
 
 - (void)setGreenRangeMax:(int)value {
-   //TODO: setGreenRangeMax
+    //TODO: setGreenRangeMax
 }
 
 //******************************************************************************
 
 - (void)setBlueRangeMin:(int)value {
-   //TODO: setBlueRangeMin
+    //TODO: setBlueRangeMin
 }
 
 //******************************************************************************
 
 - (void)setBlueRangeMax:(int)value {
-   //TODO: setBlueRangeMax
+    //TODO: setBlueRangeMax
 }
 
 //******************************************************************************
 
 - (void)setAlphaRangeMin:(int)value {
-   //TODO: setAlphaRangeMin
+    //TODO: setAlphaRangeMin
 }
 
 //******************************************************************************
 
 - (void)setAlphaRangeMax:(int)value {
-   //TODO: setAlphaRangeMax
+    //TODO: setAlphaRangeMax
 }
 
 //******************************************************************************
 
 - (void)setPolygonsMin:(int)value {
-   //TODO: setPolygonsMin
+    //TODO: setPolygonsMin
 }
 
 //******************************************************************************
 
 - (void)setPolygonsMax:(int)value {
-   //TODO: setPolygonsMax
+    //TODO: setPolygonsMax
 }
 
 //******************************************************************************
 
 - (void)setPointsPerPolygonMin:(int)value {
-   //TODO: setPointsPerPolygonMin
+    //TODO: setPointsPerPolygonMin
 }
 
 //******************************************************************************
 
 - (void)setPointsPerPolygonMax:(int)value {
-   if (value < pointsPerPolygonMin) {
-      pointsPerPolygonMin = value;
-   }
+    if (value < pointsPerPolygonMin) {
+        pointsPerPolygonMin = value;
+    }
    
-   pointsPerPolygonMax = value;
+    pointsPerPolygonMax = value;
 }
 
 //******************************************************************************
 
 - (void)setPointsMin:(int)value {
-   if (value > pointsMax) {
-      pointsMax = value;
-   }
+    if (value > pointsMax) {
+        pointsMax = value;
+    }
    
-   pointsMin = value;
+    pointsMin = value;
 }
 
 //******************************************************************************
 
 - (void)setPointsMax:(int)value {
-   if (value < pointsMin) {
-      pointsMin = value;
-   }
+    if (value < pointsMin) {
+        pointsMin = value;
+    }
    
-   pointsMax = value;
+    pointsMax = value;
 }
 
 //******************************************************************************
 
 - (void)setMovePointRangeMin:(int)value {
-   if (value > movePointRangeMid) {
-      movePointRangeMid = value;
-   }
+    if (value > movePointRangeMid) {
+        movePointRangeMid = value;
+    }
    
-   movePointRangeMin = value;
+    movePointRangeMin = value;
 }
 
 //******************************************************************************
 
 - (void)setMovePointRangeMid:(int)value {
-   if (value < movePointRangeMin) {
-      movePointRangeMin = value;
-   }
+    if (value < movePointRangeMin) {
+        movePointRangeMin = value;
+    }
    
-   movePointRangeMid = value;
+    movePointRangeMid = value;
 }
 
 //******************************************************************************
 
 - (void)activate {
-   activeAddPolygonMutationRate = addPolygonMutationRate;
-   activeRemovePolygonMutationRate = removePolygonMutationRate;
-   activeMovePolygonMutationRate = movePolygonMutationRate;
+    activeAddPolygonMutationRate = addPolygonMutationRate;
+    activeRemovePolygonMutationRate = removePolygonMutationRate;
+    activeMovePolygonMutationRate = movePolygonMutationRate;
    
-   activeAddPointMutationRate = addPointMutationRate;
-   activeRemovePointMutationRate = removePointMutationRate;
-   activeMovePointMaxMutationRate = movePointMaxMutationRate;
-   activeMovePointMidMutationRate = movePointMidMutationRate;
-   activeMovePointMinMutationRate = movePointMinMutationRate;
+    activeAddPointMutationRate = addPointMutationRate;
+    activeRemovePointMutationRate = removePointMutationRate;
+    activeMovePointMaxMutationRate = movePointMaxMutationRate;
+    activeMovePointMidMutationRate = movePointMidMutationRate;
+    activeMovePointMinMutationRate = movePointMinMutationRate;
    
-   activeRedMutationRate = redMutationRate;
-   activeGreenMutationRate = greenMutationRate;
-   activeBlueMutationRate = blueMutationRate;
-   activeAlphaMutationRate = alphaMutationRate;
+    activeRedMutationRate = redMutationRate;
+    activeGreenMutationRate = greenMutationRate;
+    activeBlueMutationRate = blueMutationRate;
+    activeAlphaMutationRate = alphaMutationRate;
    
-   activeRedRangeMin = redRangeMin;
-   activeRedRangeMax = redRangeMax;
-   activeGreenRangeMin = greenRangeMin;
-   activeGreenRangeMax = greenRangeMax;
-   activeBlueRangeMin = blueRangeMin;
-   activeBlueRangeMax = blueRangeMax;
-   activeAlphaRangeMin = alphaRangeMin;
-   activeAlphaRangeMax = alphaRangeMax;
+    activeRedRangeMin = redRangeMin;
+    activeRedRangeMax = redRangeMax;
+    activeGreenRangeMin = greenRangeMin;
+    activeGreenRangeMax = greenRangeMax;
+    activeBlueRangeMin = blueRangeMin;
+    activeBlueRangeMax = blueRangeMax;
+    activeAlphaRangeMin = alphaRangeMin;
+    activeAlphaRangeMax = alphaRangeMax;
    
-   activePolygonsMax = polygonsMax;
-   activePolygonsMin = polygonsMin;
+    activePolygonsMax = polygonsMax;
+    activePolygonsMin = polygonsMin;
    
-   activePointsPerPolygonMax = pointsPerPolygonMax;
-   activePointsPerPolygonMin = pointsPerPolygonMin;
+    activePointsPerPolygonMax = pointsPerPolygonMax;
+    activePointsPerPolygonMin = pointsPerPolygonMin;
    
-   activePointsMax = pointsMax;
-   activePointsMin = pointsMin;
+    activePointsMax = pointsMax;
+    activePointsMin = pointsMin;
    
-   activeMovePointRangeMid = movePointRangeMid;
-   activeMovePointRangeMin = movePointRangeMin;
+    activeMovePointRangeMid = movePointRangeMid;
+    activeMovePointRangeMin = movePointRangeMin;
 }
 
 //******************************************************************************
 
 - (void)discard {
-   addPolygonMutationRate = activeAddPolygonMutationRate;
-   removePolygonMutationRate = activeRemovePolygonMutationRate;
-   movePolygonMutationRate = activeMovePolygonMutationRate;
+    addPolygonMutationRate = activeAddPolygonMutationRate;
+    removePolygonMutationRate = activeRemovePolygonMutationRate;
+    movePolygonMutationRate = activeMovePolygonMutationRate;
 
-   addPointMutationRate = activeAddPointMutationRate;
-   removePointMutationRate = activeRemovePointMutationRate;
-   movePointMaxMutationRate = activeMovePointMaxMutationRate;
-   movePointMidMutationRate = activeMovePointMidMutationRate;
-   movePointMinMutationRate = activeMovePointMinMutationRate;
+    addPointMutationRate = activeAddPointMutationRate;
+    removePointMutationRate = activeRemovePointMutationRate;
+    movePointMaxMutationRate = activeMovePointMaxMutationRate;
+    movePointMidMutationRate = activeMovePointMidMutationRate;
+    movePointMinMutationRate = activeMovePointMinMutationRate;
 
-   redMutationRate = activeRedMutationRate;
-   greenMutationRate = activeGreenMutationRate;
-   blueMutationRate = activeBlueMutationRate;
-   alphaMutationRate = activeAlphaMutationRate;
+    redMutationRate = activeRedMutationRate;
+    greenMutationRate = activeGreenMutationRate;
+    blueMutationRate = activeBlueMutationRate;
+    alphaMutationRate = activeAlphaMutationRate;
 
-   //Limits / Constraints
-   redRangeMin = activeRedRangeMin;
-   redRangeMax = activeRedRangeMax;
-   greenRangeMin = activeGreenRangeMin;
-   greenRangeMax = activeGreenRangeMax;
-   blueRangeMin = activeBlueRangeMin;
-   blueRangeMax = activeBlueRangeMax;
-   alphaRangeMin = activeAlphaRangeMin;
-   alphaRangeMax = activeAlphaRangeMax;
+    //Limits / Constraints
+    redRangeMin = activeRedRangeMin;
+    redRangeMax = activeRedRangeMax;
+    greenRangeMin = activeGreenRangeMin;
+    greenRangeMax = activeGreenRangeMax;
+    blueRangeMin = activeBlueRangeMin;
+    blueRangeMax = activeBlueRangeMax;
+    alphaRangeMin = activeAlphaRangeMin;
+    alphaRangeMax = activeAlphaRangeMax;
 
-   polygonsMax = activePolygonsMax;
-   polygonsMin = activePolygonsMin;
+    polygonsMax = activePolygonsMax;
+    polygonsMin = activePolygonsMin;
 
-   pointsPerPolygonMax = activePointsPerPolygonMax;
-   pointsPerPolygonMin = activePointsPerPolygonMin;
+    pointsPerPolygonMax = activePointsPerPolygonMax;
+    pointsPerPolygonMin = activePointsPerPolygonMin;
 
-   pointsMax = activePointsMax;
-   pointsMin = activePointsMin;
+    pointsMax = activePointsMax;
+    pointsMin = activePointsMin;
 
-   movePointRangeMid = activeMovePointRangeMid;
-   movePointRangeMin = activeMovePointRangeMin;
+    movePointRangeMid = activeMovePointRangeMid;
+    movePointRangeMin = activeMovePointRangeMin;
 }
 
 //******************************************************************************
 
 - (void)reset {
-   activeAddPolygonMutationRate = 700;
-   activeRemovePolygonMutationRate = 750;
-   activeMovePolygonMutationRate = 700;
+    activeAddPolygonMutationRate = 700;
+    activeRemovePolygonMutationRate = 750;
+    activeMovePolygonMutationRate = 700;
 
-   activeAddPointMutationRate = 750;
-   activeRemovePointMutationRate = 750;
-   activeMovePointMaxMutationRate = 750;
-   activeMovePointMidMutationRate = 750;
-   activeMovePointMinMutationRate = 750;
+    activeAddPointMutationRate = 750;
+    activeRemovePointMutationRate = 750;
+    activeMovePointMaxMutationRate = 750;
+    activeMovePointMidMutationRate = 750;
+    activeMovePointMinMutationRate = 750;
 
-   activeRedMutationRate = 750;
-   activeGreenMutationRate = 750;
-   activeBlueMutationRate = 750;
-   activeAlphaMutationRate = 750;
+    activeRedMutationRate = 750;
+    activeGreenMutationRate = 750;
+    activeBlueMutationRate = 750;
+    activeAlphaMutationRate = 750;
 
-   //Limits / Constraints
-   activeRedRangeMin = MIN_COLOR_INTENSITY;
-   activeRedRangeMax = MAX_COLOR_INTENSITY;
-   activeGreenRangeMin = MIN_COLOR_INTENSITY;
-   activeGreenRangeMax = MAX_COLOR_INTENSITY;
-   activeBlueRangeMin = MIN_COLOR_INTENSITY;
-   activeBlueRangeMax = MAX_COLOR_INTENSITY;
-   activeAlphaRangeMin = MIN_ALPHA;
-   activeAlphaRangeMax = MAX_ALPHA;
+    //Limits / Constraints
+    activeRedRangeMin = MIN_COLOR_INTENSITY;
+    activeRedRangeMax = MAX_COLOR_INTENSITY;
+    activeGreenRangeMin = MIN_COLOR_INTENSITY;
+    activeGreenRangeMax = MAX_COLOR_INTENSITY;
+    activeBlueRangeMin = MIN_COLOR_INTENSITY;
+    activeBlueRangeMax = MAX_COLOR_INTENSITY;
+    activeAlphaRangeMin = MIN_ALPHA;
+    activeAlphaRangeMax = MAX_ALPHA;
 
-   activePolygonsMax = MAX_POLYGONS;
-   activePolygonsMin = MIN_POLYGONS;
+    activePolygonsMax = MAX_POLYGONS;
+    activePolygonsMin = MIN_POLYGONS;
 
-   activePointsPerPolygonMax = 3;
-   activePointsPerPolygonMin = 3;
+    activePointsPerPolygonMax = 3;
+    activePointsPerPolygonMin = 3;
 
-   activePointsMax = 2000;
-   activePointsMin = 500;
+    activePointsMax = 2000;
+    activePointsMin = 500;
 
-   activeMovePointRangeMid = 20;
-   activeMovePointRangeMin = 3;
+    activeMovePointRangeMid = 20;
+    activeMovePointRangeMin = 3;
 
-   [self discard];
+    [self discard];
 }
 
 //******************************************************************************

@@ -5,6 +5,7 @@
 //  Created by Paul Dardeau on 1/17/10.
 //  Copyright 2010 Paul Dardeau. All rights reserved.
 //
+
 #include <stdlib.h>
 #import "Tools.h"
 
@@ -17,40 +18,40 @@ static Tools* toolsInstance = nil;
 //******************************************************************************
 
 + (Tools*)instance {
-   if (toolsInstance == nil) {
-      toolsInstance = [[Tools alloc] init];
-   }
+    if (toolsInstance == nil) {
+        toolsInstance = [[Tools alloc] init];
+    }
    
-   return toolsInstance;
+    return toolsInstance;
 }
 
 //******************************************************************************
 
 + (void)killInstance {
-   [toolsInstance release];
-   toolsInstance = nil;
+    [toolsInstance release];
+    toolsInstance = nil;
 }
 
 //******************************************************************************
 
 - (id)init {
-   if ((self = [super init]) != nil) {
-       [self reseedRandomLibrary];
-   }
+    if ((self = [super init]) != nil) {
+        [self reseedRandomLibrary];
+    }
    
-   return self;
+    return self;
 }
 
 //******************************************************************************
 
 - (void)reseedRandomLibrary {
-   srandom((unsigned int)time(NULL));
+    srandom((unsigned int)time(NULL));
 }
 
 //******************************************************************************
 
 - (int)getRandomNumberWithMin:(int)minimum andMaximum:(int)maximum {
-   return (minimum + (maximum * (random() / (float) RAND_MAX)));
+    return (minimum + (maximum * (random() / (float) RAND_MAX)));
 }
 
 //******************************************************************************
