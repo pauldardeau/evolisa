@@ -3,7 +3,7 @@
 //  EvoLisa
 //
 //  Created by Paul Dardeau on 1/17/10.
-//  Copyright 2010 SwampBits. All rights reserved.
+//  Copyright 2010 Paul Dardeau. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>
