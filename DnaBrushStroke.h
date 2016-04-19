@@ -6,7 +6,9 @@
 //
 //
 
+
 #import <Foundation/Foundation.h>
+
 
 @class DnaPoint;
 @class DnaBrush;
@@ -27,12 +29,12 @@
     Tools* tools;
 }
 
-@property(nonatomic,retain) DnaPoint* startingPoint;
-@property(nonatomic) NSPoint endingPoint;
-@property(nonatomic) int angleDirection;
-@property(nonatomic) int brushWidth;
-@property(nonatomic) int strokeLength;
-@property(nonatomic,retain) DnaBrush* brush;
+@property (nonatomic,retain) DnaPoint* startingPoint;
+@property (nonatomic) NSPoint endingPoint;
+@property (nonatomic) int angleDirection;
+@property (nonatomic) int brushWidth;
+@property (nonatomic) int strokeLength;
+@property (nonatomic,retain) DnaBrush* brush;
 
 - (id)initWithSize:(NSSize)theDrawingSize;
 - (DnaBrushStroke*)initAsCloneFromBrushStroke:(DnaBrushStroke*)cloneFrom;

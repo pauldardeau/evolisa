@@ -8,6 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+
 @class DnaDrawing;
 @class Settings;
 @class Tools;
@@ -15,13 +16,13 @@
 
 @interface DnaPoint : NSObject <NSCoding>
 {
-   NSPoint point;
-   Settings* settings;
-   Tools* tools;
-   NSSize drawingSize;
+    NSPoint point;
+    Settings* settings;
+    Tools* tools;
+    NSSize drawingSize;
 }
 
-@property(nonatomic) NSPoint point;
+@property (nonatomic) NSPoint point;
 
 - (id)initWithSize:(NSSize)theDrawingSize;
 

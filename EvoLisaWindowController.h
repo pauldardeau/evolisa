@@ -6,6 +6,7 @@
 //  Copyright 2010 Paul Dardeau. All rights reserved.
 //
 
+
 #import <Cocoa/Cocoa.h>
 
 
@@ -16,45 +17,45 @@
 
 typedef struct
 {
-	unsigned char red;
-	unsigned char green;
-	unsigned char blue;
-	unsigned char alpha;
+    unsigned char red;
+    unsigned char green;
+    unsigned char blue;
+    unsigned char alpha;
 } RGBA;
 
 
 @interface EvoLisaWindowController : NSWindowController
 {
-   IBOutlet NSImageView* sourceImage;
-   IBOutlet NSImageView* generatedImage;
-   IBOutlet NSButton* generateButton;
-   IBOutlet NSButton* stopButton;
-   IBOutlet GLDrawingCanvas* glDrawingCanvas;
-   IBOutlet DrawingCanvas* drawingCanvas;
-   IBOutlet NSTextField* lblFitnessValue;
-   IBOutlet NSTextField* lblGeneration;
+    IBOutlet NSImageView* sourceImage;
+    IBOutlet NSImageView* generatedImage;
+    IBOutlet NSButton* generateButton;
+    IBOutlet NSButton* stopButton;
+    IBOutlet GLDrawingCanvas* glDrawingCanvas;
+    IBOutlet DrawingCanvas* drawingCanvas;
+    IBOutlet NSTextField* lblFitnessValue;
+    IBOutlet NSTextField* lblGeneration;
    
-   NSBitmapImageRep* sourceImageRep;
-   NSString* userHomeDir;
-   int sourceImageWidth;
-   int sourceImageHeight;
-   unsigned long long bestFitnessSoFar;
-   BOOL haveAFitnessScore;
-   DnaDrawing* currentDrawing;
-   DnaDrawing* updatedDrawing;
-   NSSize drawingSize;
-   int generation;
-   int selected;
-   BOOL isRunning;
-   RGBA* sourceChannelData;
-   int numberBytes;
-   BOOL usingOpenGL;
-   NSDateFormatter* dateFormatter;
+    NSBitmapImageRep* sourceImageRep;
+    NSString* userHomeDir;
+    int sourceImageWidth;
+    int sourceImageHeight;
+    unsigned long long bestFitnessSoFar;
+    BOOL haveAFitnessScore;
+    DnaDrawing* currentDrawing;
+    DnaDrawing* updatedDrawing;
+    NSSize drawingSize;
+    int generation;
+    int selected;
+    BOOL isRunning;
+    RGBA* sourceChannelData;
+    int numberBytes;
+    BOOL usingOpenGL;
+    NSDateFormatter* dateFormatter;
 }
 
-@property(nonatomic,retain) DnaDrawing* currentDrawing;
-@property(nonatomic,retain) DnaDrawing* updatedDrawing;
-@property(nonatomic,retain) NSString* userHomeDir;
+@property (nonatomic,retain) DnaDrawing* currentDrawing;
+@property (nonatomic,retain) DnaDrawing* updatedDrawing;
+@property (nonatomic,retain) NSString* userHomeDir;
 
 - (IBAction)generateButtonClicked:(id)sender;
 - (IBAction)stopButtonClicked:(id)sender;

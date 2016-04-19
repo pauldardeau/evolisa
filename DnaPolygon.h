@@ -6,7 +6,9 @@
 //  Copyright 2010 Paul Dardeau. All rights reserved.
 //
 
+
 #import <Cocoa/Cocoa.h>
+
 
 @class DnaBrush;
 @class DnaDrawing;
@@ -16,14 +18,14 @@
 
 @interface DnaPolygon : NSObject <NSCoding>
 {
-   NSMutableArray* listPoints;
-   DnaBrush* brush;
-   Settings* settings;
-   Tools* tools;
+    NSMutableArray* listPoints;
+    DnaBrush* brush;
+    Settings* settings;
+    Tools* tools;
 }
 
-@property(nonatomic,retain) NSMutableArray* listPoints;
-@property(nonatomic,retain) DnaBrush* brush;
+@property (nonatomic,retain) NSMutableArray* listPoints;
+@property (nonatomic,retain) DnaBrush* brush;
 
 - (id)initWithSize:(NSSize)theDrawingSize;
 - (DnaPolygon*)initAsCloneFromPolygon:(DnaPolygon*)cloneFrom;

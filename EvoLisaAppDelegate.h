@@ -6,7 +6,9 @@
 //  Copyright 2010 Paul Dardeau. All rights reserved.
 //
 
+
 #import <Cocoa/Cocoa.h>
+
 
 @class EvoLisaWindowController;
 
@@ -17,8 +19,8 @@
 @interface EvoLisaAppDelegate : NSObject <NSApplicationDelegate>
 #endif
 {
-   NSWindow *window;
-   EvoLisaWindowController* windowController;
+    NSWindow *window;
+    EvoLisaWindowController* windowController;
 }
 
 @property (assign) IBOutlet NSWindow* window;

@@ -6,7 +6,9 @@
 //  Copyright 2010 Paul Dardeau. All rights reserved.
 //
 
+
 #import <Cocoa/Cocoa.h>
+
 
 @class Tools;
 @class EvoLisaWindowController;
@@ -14,14 +16,14 @@
 
 @interface DrawingCanvas : NSView
 {
-   Tools* tools;
-   EvoLisaWindowController* windowController;
-   DnaDrawing* drawing;
-   NSRect frameRect;
+    Tools* tools;
+    EvoLisaWindowController* windowController;
+    DnaDrawing* drawing;
+    NSRect frameRect;
 }
 
-@property(nonatomic,retain) EvoLisaWindowController* windowController;
-@property(nonatomic,retain) DnaDrawing* drawing;
+@property (nonatomic,retain) EvoLisaWindowController* windowController;
+@property (nonatomic,retain) DnaDrawing* drawing;
 
 
 - (void)redraw;
