@@ -58,97 +58,97 @@
 //******************************************************************************
 
 - (id)init {
-   self = [super init];
-   if (self) {
-      settings = [Settings instance];
-      tools = [Tools instance];
-      red = [tools getRandomNumberWithMin:settings.activeRedRangeMin
-                               andMaximum:settings.activeRedRangeMax];
-      green = [tools getRandomNumberWithMin:settings.activeGreenRangeMin
-                                 andMaximum:settings.activeGreenRangeMax];
-      blue = [tools getRandomNumberWithMin:settings.activeBlueRangeMin
-                                andMaximum:settings.activeBlueRangeMax];
-      alpha = [tools getRandomNumberWithMin:settings.activeAlphaRangeMin
-                                 andMaximum:settings.activeAlphaRangeMax];
-      self.brushColor =
-         [NSColor colorWithDeviceRed:(red/255.0)
-                               green:(green/255.0)
-                                blue:(blue/255.0)
-                               alpha:(alpha/100.0)];
-   }
+    self = [super init];
+    if (self) {
+        settings = [Settings instance];
+        tools = [Tools instance];
+        red = [tools getRandomNumberWithMin:settings.activeRedRangeMin
+                                 andMaximum:settings.activeRedRangeMax];
+        green = [tools getRandomNumberWithMin:settings.activeGreenRangeMin
+                                   andMaximum:settings.activeGreenRangeMax];
+        blue = [tools getRandomNumberWithMin:settings.activeBlueRangeMin
+                                  andMaximum:settings.activeBlueRangeMax];
+        alpha = [tools getRandomNumberWithMin:settings.activeAlphaRangeMin
+                                   andMaximum:settings.activeAlphaRangeMax];
+        self.brushColor =
+            [NSColor colorWithDeviceRed:(red/255.0)
+                                  green:(green/255.0)
+                                   blue:(blue/255.0)
+                                  alpha:(alpha/100.0)];
+    }
    
-   return self;
+    return self;
 }
 
 //******************************************************************************
 
 - (DnaBrush*)initAsCloneFromBrush:(DnaBrush*)cloneFrom {
-   self = [super init];
-   if (self) {
-      DnaBrush* cloneBrush = (DnaBrush*)cloneFrom;
-      settings = [Settings instance];
-      tools = [Tools instance];
-      red = cloneBrush.red;
-      green = cloneBrush.green;
-      blue = cloneBrush.blue;
-      alpha = cloneBrush.alpha;
-      self.brushColor =
-         [NSColor colorWithDeviceRed:(red/255.0)
-                               green:(green/255.0)
-                                blue:(blue/255.0)
-                               alpha:(alpha/100.0)];
-   }
+    self = [super init];
+    if (self) {
+        DnaBrush* cloneBrush = (DnaBrush*)cloneFrom;
+        settings = [Settings instance];
+        tools = [Tools instance];
+        red = cloneBrush.red;
+        green = cloneBrush.green;
+        blue = cloneBrush.blue;
+        alpha = cloneBrush.alpha;
+        self.brushColor =
+            [NSColor colorWithDeviceRed:(red/255.0)
+                                  green:(green/255.0)
+                                   blue:(blue/255.0)
+                                  alpha:(alpha/100.0)];
+    }
    
-   return self;
+    return self;
 }
 
 //******************************************************************************
 
 - (void)dealloc {
-   self.brushColor = nil;
-   [super dealloc];
+    self.brushColor = nil;
+    [super dealloc];
 }
 
 //******************************************************************************
 
 - (void)mutate:(DnaDrawing*)drawing {
-   BOOL isChanged = NO;
+    BOOL isChanged = NO;
    
-   if ([tools willMutate:settings.activeRedMutationRate]) {
-      red = [tools getRandomNumberWithMin:settings.activeRedRangeMin
-                               andMaximum:settings.activeRedRangeMax];
-      drawing.isDirty = YES;
-      isChanged = YES;
-   }
+    if ([tools willMutate:settings.activeRedMutationRate]) {
+        red = [tools getRandomNumberWithMin:settings.activeRedRangeMin
+                                 andMaximum:settings.activeRedRangeMax];
+        drawing.isDirty = YES;
+        isChanged = YES;
+    }
    
-   if ([tools willMutate:settings.activeGreenMutationRate]) {
-      green = [tools getRandomNumberWithMin:settings.activeGreenRangeMin
-                                 andMaximum:settings.activeGreenRangeMax];
-      drawing.isDirty = YES;
-      isChanged = YES;
-   }
-   
-   if ([tools willMutate:settings.activeBlueMutationRate]) {
-      blue = [tools getRandomNumberWithMin:settings.activeBlueRangeMin
-                                andMaximum:settings.activeBlueRangeMax];
-      drawing.isDirty = YES;
-      isChanged = YES;
-   }
+    if ([tools willMutate:settings.activeGreenMutationRate]) {
+        green = [tools getRandomNumberWithMin:settings.activeGreenRangeMin
+                                   andMaximum:settings.activeGreenRangeMax];
+        drawing.isDirty = YES;
+        isChanged = YES;
+    }
+    
+    if ([tools willMutate:settings.activeBlueMutationRate]) {
+        blue = [tools getRandomNumberWithMin:settings.activeBlueRangeMin
+                                  andMaximum:settings.activeBlueRangeMax];
+        drawing.isDirty = YES;
+        isChanged = YES;
+    }
 
-   if ([tools willMutate:settings.activeAlphaMutationRate]) {
-      alpha = [tools getRandomNumberWithMin:settings.activeAlphaRangeMin
-                                 andMaximum:settings.activeAlphaRangeMax];
-      drawing.isDirty = YES;
-      isChanged = YES;
-   }
+    if ([tools willMutate:settings.activeAlphaMutationRate]) {
+        alpha = [tools getRandomNumberWithMin:settings.activeAlphaRangeMin
+                                   andMaximum:settings.activeAlphaRangeMax];
+        drawing.isDirty = YES;
+        isChanged = YES;
+    }
    
-   if (isChanged) {
-      self.brushColor =
-         [NSColor colorWithDeviceRed:(red/255.0)
-                               green:(green/255.0)
-                                blue:(blue/255.0)
-                               alpha:(alpha/100.0)];
-   }
+    if (isChanged) {
+        self.brushColor =
+            [NSColor colorWithDeviceRed:(red/255.0)
+                                  green:(green/255.0)
+                                   blue:(blue/255.0)
+                                  alpha:(alpha/100.0)];
+    }
 }
 
 //******************************************************************************

@@ -240,7 +240,6 @@ static const int MAX_STROKE_LENGTH = 30;
         self.endingPoint = NSMakePoint(startingPoint.point.x + x,
                                        startingPoint.point.y - y);
     }
-
 }
 
 //******************************************************************************
