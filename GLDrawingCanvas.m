@@ -121,7 +121,7 @@ static void drawAnObject(DnaDrawing* aDrawing) {
     
     near = -camera.viewPos.z - shapeSize * 0.5;
     if (near < 0.00001) {
-       near = 0.00001;
+        near = 0.00001;
     }
     
     far = -camera.viewPos.z + shapeSize * 0.5;
@@ -189,16 +189,16 @@ static void drawAnObject(DnaDrawing* aDrawing) {
     int width = NSWidth(visibleRect);
     
     NSBitmapImageRep* imageRep =
-       [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
-                                                pixelsWide:width
-                                                pixelsHigh:height
-                                             bitsPerSample:8
-                                           samplesPerPixel:4
-                                                  hasAlpha:YES
-                                                  isPlanar:NO
-                                            colorSpaceName:NSCalibratedRGBColorSpace
-                                               bytesPerRow:0
-                                              bitsPerPixel:0] autorelease];
+        [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
+                                                 pixelsWide:width
+                                                 pixelsHigh:height
+                                              bitsPerSample:8
+                                            samplesPerPixel:4
+                                                   hasAlpha:YES
+                                                   isPlanar:NO
+                                             colorSpaceName:NSCalibratedRGBColorSpace
+                                                bytesPerRow:0
+                                               bitsPerPixel:0] autorelease];
     [[self openGLContext] makeCurrentContext];
     glReadPixels(0, 0, width, height,
                  GL_RGBA, GL_UNSIGNED_BYTE,

@@ -48,99 +48,99 @@
 //******************************************************************************
 
 - (id)initWithSize:(NSSize)theDrawingSize {
-   self = [super init];
-   if (self) {
-       settings = [Settings instance];
-       const int activePolygonsMin = settings.activePolygonsMin;
+    self = [super init];
+    if (self) {
+        settings = [Settings instance];
+        const int activePolygonsMin = settings.activePolygonsMin;
 
-      NSMutableArray* aList =
-         [[NSMutableArray alloc] initWithCapacity:activePolygonsMin];
-      self.listPolygons = aList;
-      [aList release];
+        NSMutableArray* aList =
+            [[NSMutableArray alloc] initWithCapacity:activePolygonsMin];
+        self.listPolygons = aList;
+        [aList release];
        
-       aList = [[NSMutableArray alloc] initWithCapacity:activePolygonsMin];
-       self.listBrushStrokes = aList;
-       [aList release];
+        aList = [[NSMutableArray alloc] initWithCapacity:activePolygonsMin];
+        self.listBrushStrokes = aList;
+        [aList release];
        
-      isDirty = YES;
-      tools = [Tools instance];
-      drawingSize = theDrawingSize;
+        isDirty = YES;
+        tools = [Tools instance];
+        drawingSize = theDrawingSize;
       
-      for (int i = 0; i < activePolygonsMin; ++i) {
-         [self addPolygon];
-         [self addBrushStroke];
-      }
+        for (int i = 0; i < activePolygonsMin; ++i) {
+            [self addPolygon];
+            [self addBrushStroke];
+        }
        
-       _polygonCount = [self.listPolygons count];
-       _brushStrokeCount = [self.listBrushStrokes count];
-   }
+        _polygonCount = [self.listPolygons count];
+        _brushStrokeCount = [self.listBrushStrokes count];
+    }
    
-   return self;
+    return self;
 }
 
 //******************************************************************************
 
 - (DnaDrawing*)initAsCloneFromDrawing:(DnaDrawing*)cloneFrom {
-   self = [super init];
-   if (self) {
-      NSUInteger numPolygons = [cloneFrom.listPolygons count];
-      NSUInteger numBrushStrokes = [cloneFrom.listBrushStrokes count];
-      NSMutableArray* aList = 
-         [[NSMutableArray alloc] initWithCapacity:numPolygons];
-      isDirty = NO;
-      settings = [Settings instance];
-      tools = [Tools instance];
-      drawingSize = cloneFrom->drawingSize;
+    self = [super init];
+    if (self) {
+        NSUInteger numPolygons = [cloneFrom.listPolygons count];
+        NSUInteger numBrushStrokes = [cloneFrom.listBrushStrokes count];
+        NSMutableArray* aList =
+            [[NSMutableArray alloc] initWithCapacity:numPolygons];
+        isDirty = NO;
+        settings = [Settings instance];
+        tools = [Tools instance];
+        drawingSize = cloneFrom->drawingSize;
 
-      DnaPolygon* newPolygon;
+        DnaPolygon* newPolygon;
    
-      for (DnaPolygon* oldPolygon in cloneFrom.listPolygons) {
-         newPolygon = [[DnaPolygon alloc] initAsCloneFromPolygon:oldPolygon];
-         [aList addObject:newPolygon];
-         [newPolygon release];
-      }
+        for (DnaPolygon* oldPolygon in cloneFrom.listPolygons) {
+            newPolygon = [[DnaPolygon alloc] initAsCloneFromPolygon:oldPolygon];
+            [aList addObject:newPolygon];
+            [newPolygon release];
+        }
       
-      self.listPolygons = aList;
-      [aList release];
-       _polygonCount = [self.listPolygons count];
+        self.listPolygons = aList;
+        [aList release];
+        _polygonCount = [self.listPolygons count];
        
-       aList = [[NSMutableArray alloc] initWithCapacity:numBrushStrokes];
+        aList = [[NSMutableArray alloc] initWithCapacity:numBrushStrokes];
        
-       DnaBrushStroke* newBrushStroke;
+        DnaBrushStroke* newBrushStroke;
        
-       for (DnaBrushStroke* oldBrushStroke in cloneFrom.listBrushStrokes) {
-           newBrushStroke =
-              [[DnaBrushStroke alloc] initAsCloneFromBrushStroke:oldBrushStroke];
-           [aList addObject:newBrushStroke];
-           [newBrushStroke release];
-       }
-       self.listBrushStrokes = aList;
-       [aList release];
+        for (DnaBrushStroke* oldBrushStroke in cloneFrom.listBrushStrokes) {
+            newBrushStroke =
+                [[DnaBrushStroke alloc] initAsCloneFromBrushStroke:oldBrushStroke];
+            [aList addObject:newBrushStroke];
+            [newBrushStroke release];
+        }
+        self.listBrushStrokes = aList;
+        [aList release];
 
-       _brushStrokeCount = [self.listBrushStrokes count];
-   }
+        _brushStrokeCount = [self.listBrushStrokes count];
+    }
    
-   return self;
+    return self;
 }
 
 //******************************************************************************
 
 - (void)dealloc {
-   self.listPolygons = nil;
+    self.listPolygons = nil;
     self.listBrushStrokes = nil;
-   [super dealloc];
+    [super dealloc];
 }
 
 //******************************************************************************
 
 - (NSUInteger)getPointCount {
-   NSUInteger pointCount = 0;
+    NSUInteger pointCount = 0;
    
-   for (DnaPolygon* polygon in listPolygons) {
-      pointCount += [polygon getPointCount];
-   }
+    for (DnaPolygon* polygon in listPolygons) {
+        pointCount += [polygon getPointCount];
+    }
 
-   return pointCount;
+    return pointCount;
 }
 
 //******************************************************************************
@@ -192,64 +192,64 @@
 //******************************************************************************
 
 - (void)movePolygon {
-   if (_polygonCount > 1) {
-      // randomly select a polygon from list
-      int index = -1;
-      while ((index < 0) || (index >= _polygonCount)) {
-         index = [tools getRandomNumberWithMin:0 andMaximum:(int)_polygonCount];
-      }
+    if (_polygonCount > 1) {
+        // randomly select a polygon from list
+        int index = -1;
+        while ((index < 0) || (index >= _polygonCount)) {
+            index = [tools getRandomNumberWithMin:0 andMaximum:(int)_polygonCount];
+        }
       
-      const int randomDeleteIndex = index;
+        const int randomDeleteIndex = index;
       
-      index = -1;
-      while ((index < 0) ||
-             (index >= _polygonCount) ||
-             (index == randomDeleteIndex)) {
-         index = [tools getRandomNumberWithMin:0 andMaximum:(int)_polygonCount];
-      }
+        index = -1;
+        while ((index < 0) ||
+               (index >= _polygonCount) ||
+               (index == randomDeleteIndex)) {
+            index = [tools getRandomNumberWithMin:0 andMaximum:(int)_polygonCount];
+        }
       
-      const int randomInsertIndex = index;
+        const int randomInsertIndex = index;
       
-      // move it to another randomly selected location in list
-      [listPolygons insertObject:[listPolygons objectAtIndex:randomDeleteIndex]
-						 atIndex:randomInsertIndex];
-      [listPolygons removeObjectAtIndex:randomDeleteIndex];
-       isDirty = YES;
-   }
+        // move it to another randomly selected location in list
+        [listPolygons insertObject:[listPolygons objectAtIndex:randomDeleteIndex]
+                           atIndex:randomInsertIndex];
+        [listPolygons removeObjectAtIndex:randomDeleteIndex];
+        isDirty = YES;
+    }
 }
 
 //******************************************************************************
 
 - (void)removePolygon {
-   if (_polygonCount > settings.activePolygonsMin) {
-      // remove random polygon
-      int randomDeleteIndex = -1;
+    if (_polygonCount > settings.activePolygonsMin) {
+        // remove random polygon
+        int randomDeleteIndex = -1;
       
-      while ((randomDeleteIndex < 0) || (randomDeleteIndex >= _polygonCount)) {
-         randomDeleteIndex =
-            [tools getRandomNumberWithMin:0 andMaximum:(int)_polygonCount-1];
-      }
-      [listPolygons removeObjectAtIndex:randomDeleteIndex];
-       --_polygonCount;
-      isDirty = YES;
-   }
+        while ((randomDeleteIndex < 0) || (randomDeleteIndex >= _polygonCount)) {
+            randomDeleteIndex =
+                [tools getRandomNumberWithMin:0 andMaximum:(int)_polygonCount-1];
+        }
+        [listPolygons removeObjectAtIndex:randomDeleteIndex];
+        --_polygonCount;
+        isDirty = YES;
+    }
 }
 
 //******************************************************************************
 
 - (void)addPolygon {
-   if (_polygonCount < settings.activePolygonsMax) {
-      DnaPolygon* newPolygon = [[DnaPolygon alloc] initWithSize:drawingSize];
+    if (_polygonCount < settings.activePolygonsMax) {
+        DnaPolygon* newPolygon = [[DnaPolygon alloc] initWithSize:drawingSize];
       
-      // insert in random location
-      const int randomInsertIndex =
-         [tools getRandomNumberWithMin:0 andMaximum:(int)_polygonCount-1];
-      [listPolygons insertObject:newPolygon atIndex:randomInsertIndex];
-      isDirty = YES;
-       ++_polygonCount;
+        // insert in random location
+        const int randomInsertIndex =
+            [tools getRandomNumberWithMin:0 andMaximum:(int)_polygonCount-1];
+        [listPolygons insertObject:newPolygon atIndex:randomInsertIndex];
+        isDirty = YES;
+        ++_polygonCount;
       
-      [newPolygon release];
-   }
+        [newPolygon release];
+    }
 }
 
 //******************************************************************************
@@ -323,11 +323,11 @@
 //******************************************************************************
 
 - (void)setSize:(NSSize)theDrawingSize {
-   drawingSize = theDrawingSize;
+    drawingSize = theDrawingSize;
    
-   for (DnaPolygon* polygon in listPolygons) {
-      [polygon setSize:drawingSize];
-   }
+    for (DnaPolygon* polygon in listPolygons) {
+        [polygon setSize:drawingSize];
+    }
 }
 
 //******************************************************************************
