@@ -85,7 +85,7 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
 
 - (void)awakeFromNib {
     self.userHomeDir = NSHomeDirectory();
-    usingOpenGL = NO;
+    usingOpenGL = YES;
     
     NSString* sourceImageDir = [NSString stringWithFormat:@"%@/paintings/",
                                 self.userHomeDir];
