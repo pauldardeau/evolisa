@@ -67,8 +67,8 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
     for (int i = 0; i < 16; ++i) {
         output[i] = vec_perm(unaligned_input[i],
                              unaligned_input[i+1],
-							 perm); 
-	}
+                             perm);
+    }
 }
 #endif
 
