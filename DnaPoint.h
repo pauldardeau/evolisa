@@ -31,4 +31,9 @@
 
 - (void)setSize:(NSSize)drawingSize;
 
+- (NSDictionary*)toDictionary;
++ (DnaPoint*)fromDictionary:(NSDictionary*)dict;
+
+- (BOOL)isEqualToPoint:(DnaPoint*)other;
+
 @end

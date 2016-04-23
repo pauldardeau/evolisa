@@ -26,9 +26,11 @@
     NSSize drawingSize;
 }
 
-@property (nonatomic,retain) NSMutableArray* listPolygons;
-@property (nonatomic,retain) NSMutableArray* listBrushStrokes;
+@property (nonatomic, retain) NSMutableArray* listPolygons;
+@property (nonatomic, retain) NSMutableArray* listBrushStrokes;
 @property (nonatomic) BOOL isDirty;
+@property (nonatomic, assign) NSInteger generation;
+@property (nonatomic, assign) NSSize drawingSize;
 
 - (id)initWithSize:(NSSize)theDrawingSize;
 - (DnaDrawing*)initAsCloneFromDrawing:(DnaDrawing*)cloneFrom;
@@ -50,5 +52,14 @@
 - (float)height;
 
 - (NSSize)drawingSize;
+
+- (BOOL)saveToTextFile:(NSString*)filePath;
+- (BOOL)saveToJsonFile:(NSString*)filePath;
++ (DnaDrawing*)readFromTextFile:(NSString*)filePath;
++ (DnaDrawing*)readFromJsonFile:(NSString*)filePath;
++ (DnaDrawing*)fromDictionary:(NSDictionary*)dict;
+- (NSDictionary*)toDictionary;
+
+- (BOOL)isEqualToDrawing:(DnaDrawing*)other;
 
 @end

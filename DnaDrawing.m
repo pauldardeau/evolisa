@@ -9,8 +9,17 @@
 #import "DnaDrawing.h"
 #import "DnaPolygon.h"
 #import "DnaBrushStroke.h"
+#import "DnaPoint.h"
+#import "DnaBrush.h"
 #import "Settings.h"
 #import "Tools.h"
+
+
+static NSString* KEY_POLYGONS = @"listPolygons";
+static NSString* KEY_BRUSH_STROKES = @"listBrushStrokes";
+static NSString* KEY_IS_DIRTY = @"isDirty";
+static NSString* KEY_DRAWING_SIZE = @"drawingSize";
+static NSString* KEY_GENERATION = @"generation";
 
 
 @implementation DnaDrawing
@@ -18,6 +27,8 @@
 @synthesize listBrushStrokes;
 @synthesize listPolygons;
 @synthesize isDirty;
+@synthesize generation;
+@synthesize drawingSize;
 
 //******************************************************************************
 
@@ -26,23 +37,24 @@
     if (self) {
         settings = [Settings instance];
         tools = [Tools instance];
-        self.listPolygons = [aDecoder decodeObjectForKey:@"listPolygons"];
-        self.listBrushStrokes = [aDecoder decodeObjectForKey:@"listBrushStrokes"];
-        isDirty = [aDecoder decodeBoolForKey:@"isDirty"];
-        drawingSize = [aDecoder decodeSizeForKey:@"drawingSize"];
+        self.listPolygons = [aDecoder decodeObjectForKey:KEY_POLYGONS];
+        self.listBrushStrokes = [aDecoder decodeObjectForKey:KEY_BRUSH_STROKES];
+        isDirty = [aDecoder decodeBoolForKey:KEY_IS_DIRTY];
+        drawingSize = [aDecoder decodeSizeForKey:KEY_DRAWING_SIZE];
         _polygonCount = [self.listPolygons count];
+        self.generation = [aDecoder decodeIntegerForKey:KEY_GENERATION];
     }
-    
     return self;
 }
 
 //******************************************************************************
 
 - (void)encodeWithCoder:(NSCoder*)aCoder {
-    [aCoder encodeObject:listPolygons forKey:@"listPolygons"];
-    [aCoder encodeObject:listBrushStrokes forKey:@"listBrushStrokes"];
-    [aCoder encodeBool:isDirty forKey:@"isDirty"];
-    [aCoder encodeSize:drawingSize forKey:@"drawingSize"];
+    [aCoder encodeObject:listPolygons forKey:KEY_POLYGONS];
+    [aCoder encodeObject:listBrushStrokes forKey:KEY_BRUSH_STROKES];
+    [aCoder encodeBool:isDirty forKey:KEY_IS_DIRTY];
+    [aCoder encodeSize:drawingSize forKey:KEY_DRAWING_SIZE];
+    [aCoder encodeInteger:self.generation forKey:KEY_GENERATION];
 }
 
 //******************************************************************************
@@ -261,6 +273,7 @@
 //******************************************************************************
 
 - (void)addBrushStroke {
+    /*
     DnaBrushStroke* newBrushStroke =
         [[DnaBrushStroke alloc] initWithSize:drawingSize];
     
@@ -272,6 +285,7 @@
     ++_brushStrokeCount;
     
     [newBrushStroke release];
+     */
 }
 
 //******************************************************************************
@@ -346,6 +360,387 @@
 
 - (NSSize)drawingSize {
     return drawingSize;
+}
+
+//******************************************************************************
+
+- (BOOL)saveToTextFile:(NSString*)filePath {
+    BOOL success = NO;
+
+    FILE* f = fopen([filePath UTF8String], "wt");
+    
+    if (f != NULL) {
+        NSUInteger numPolygons = [self.listPolygons count];
+        
+        fprintf(f, "width=%d\n", (int) [self width]);
+        fprintf(f, "height=%d\n", (int) [self height]);
+        fprintf(f, "generation=%ld\n", (long)self.generation);
+        fprintf(f, "polygonCount=%ld\n", numPolygons);
+        DnaBrush* brush;
+        NSUInteger numPoints;
+        int x;
+        int y;
+        
+        for (DnaPolygon* polygon in self.listPolygons) {
+            brush = polygon.brush;
+            
+            numPoints = [polygon.listPoints count];
+            fprintf(f, "pointCount=%ld", numPoints);
+            fprintf(f, ";r=%ld,g=%ld,b=%ld,a=%ld",
+                    brush.red, brush.green, brush.blue, brush.alpha);
+            
+            for (DnaPoint* point in polygon.listPoints) {
+                x = (int) point.point.x;
+                y = (int) point.point.y;
+                
+                fprintf(f, ";x=%d,y=%d", x, y);
+            }
+            
+            fprintf(f, "\n");
+        }
+        
+        NSUInteger numBrushStrokes = [self.listBrushStrokes count];
+        fprintf(f,"brushStrokeCount=%ld\n", numBrushStrokes);
+        
+        for (DnaBrushStroke* brushStroke in self.listBrushStrokes) {
+            brush = brushStroke.brush;
+            
+            fprintf(f, "r=%ld,g=%ld,b=%ld,a=%ld",
+                    brush.red,
+                    brush.green,
+                    brush.blue,
+                    brush.alpha);
+            x = (int) brushStroke.startingPoint.point.x;
+            y = (int) brushStroke.startingPoint.point.y;
+            fprintf(f, ";x=%d,y=%d", x, y);
+            fprintf(f, ";angle=%ld;width=%ld;length=%ld",
+                    brushStroke.angleDirection,
+                    brushStroke.brushWidth,
+                    brushStroke.strokeLength);
+            
+            fprintf(f, "\n");
+        }
+        
+        fclose(f);
+        success = YES;
+    }
+
+    return success;
+}
+
+//******************************************************************************
+
+- (BOOL)saveToJsonFile:(NSString*)filePath {
+    BOOL success = NO;
+    
+    NSDictionary* dict = [self toDictionary];
+    NSError* error;
+    NSData* data =
+        [NSJSONSerialization dataWithJSONObject:dict
+                                        options:0
+                                          error:&error];
+    if (nil != data) {
+        [data writeToFile:filePath atomically:YES];
+        // verify serialization
+        /*
+        DnaDrawing* fileDrawing = [DnaDrawing readFromJsonFile:filePath];
+        if (fileDrawing != nil) {
+            if (![self isEqualToDrawing:fileDrawing]) {
+                NSLog(@"drawings differ");
+            }
+        }
+         */
+    }
+    
+    return success;
+}
+
+//******************************************************************************
+
++ (DnaDrawing*)readFromTextFile:(NSString*)filePath {
+    DnaDrawing* drawing = nil;
+    FILE* f = fopen([filePath UTF8String], "rt");
+    
+    if (f != NULL) {
+        int fileWidth = 0;
+        int fileHeight = 0;
+        int fileGeneration = 0;
+        int filePolygonCount = 0;
+        int fileBrushStrokeCount = 0;
+        char lineBuffer[2048];
+        NSMutableArray* listPolygons = nil;
+        NSMutableArray* listPoints;
+        NSMutableArray* listBrushStrokes = nil;
+        
+        fgets(lineBuffer, 2047, f);
+        sscanf(lineBuffer, "width=%d\n", &fileWidth);
+        
+        //TODO: temporary hack
+        //fileWidth = 200;
+        
+        fgets(lineBuffer, 2047, f);
+        sscanf(lineBuffer, "height=%d\n", &fileHeight);
+        
+        //TODO: temporary hack
+        //fileHeight = 200;
+        
+        NSSize drawingSize = NSMakeSize(fileWidth, fileHeight);
+        
+        fgets(lineBuffer, 2047, f);
+        sscanf(lineBuffer, "generation=%d\n", &fileGeneration);
+        
+        fgets(lineBuffer, 2047, f);
+        sscanf(lineBuffer, "polygonCount=%d\n", &filePolygonCount);
+        const int numPolygons = filePolygonCount;
+        
+        if (numPolygons > 0) {
+            listPolygons = [[NSMutableArray alloc] initWithCapacity:numPolygons];
+            
+            DnaPolygon* polygon;
+            DnaPoint* point;
+            DnaBrush* brush;
+            int numPoints = 0;
+            int x = 0;
+            int y = 0;
+            int red = 0;
+            int green = 0;
+            int blue = 0;
+            int alpha = 0;
+            int angle = 0;
+            int width = 0;
+            int length = 0;
+            
+            const char* pszCurrent;
+            
+            
+            for (int i = 0; i < numPolygons; ++i) {
+                fgets(lineBuffer, 2047, f);
+                sscanf(lineBuffer, "pointCount=%d;", &numPoints);
+                
+                if (numPoints > 0) {
+                    listPoints =
+                    [[NSMutableArray alloc] initWithCapacity:numPoints];
+                    
+                    pszCurrent = strchr(lineBuffer, ';') + 1;
+                    sscanf(pszCurrent, "r=%d,g=%d,b=%d,a=%d",
+                           &red, &green, &blue, &alpha);
+                    pszCurrent = strchr(pszCurrent, ';') + 1;
+                    
+                    polygon = [[DnaPolygon alloc] initWithSize:drawingSize];
+                    
+                    brush = [[DnaBrush alloc] init];
+                    brush.red = red;
+                    brush.green = green;
+                    brush.blue = blue;
+                    brush.alpha = alpha;
+                    brush.brushColor = [NSColor colorWithDeviceRed:(red/255.0)
+                                                             green:(green/255.0)
+                                                              blue:(blue/255.0)
+                                                             alpha:(alpha/100.0)];
+                    
+                    polygon.brush = brush;
+                    [brush release];
+                    
+                    for (int j = 0; j < numPoints; ++j) {
+                        sscanf(pszCurrent, "x=%d,y=%d", &x, &y);
+                        pszCurrent = strchr(pszCurrent, ';') + 1;
+                        
+                        point = [[DnaPoint alloc] initWithSize:drawingSize];
+                        point.point = NSMakePoint(x,y);
+                        [listPoints addObject:point];
+                        [point release];
+                    }
+                    
+                    polygon.listPoints = listPoints;
+                    [listPoints release];
+                    
+                    [listPolygons addObject:polygon];
+                    [polygon release];
+                }
+            }
+            
+            fgets(lineBuffer, 2047, f);
+            sscanf(lineBuffer, "brushStrokeCount=%d\n", &fileBrushStrokeCount);
+            const int numBrushStrokes = fileBrushStrokeCount;
+            
+            if (numBrushStrokes > 0) {
+                listBrushStrokes =
+                [[NSMutableArray alloc] initWithCapacity:numBrushStrokes];
+                
+                for (int i = 0; i < numBrushStrokes; ++i) {
+                    fgets(lineBuffer, 2047, f);
+                    
+                    if (9 == sscanf(lineBuffer,
+                                    "r=%d,g=%d,b=%d,a=%d;x=%d,y=%d;angle=%d;width=%d;length=%d",
+                                    &red, &green, &blue, &alpha,
+                                    &x, &y,
+                                    &angle,
+                                    &width,
+                                    &length)) {
+                        DnaBrushStroke* brushStroke = [[DnaBrushStroke alloc] init];
+                        brushStroke.angleDirection = angle;
+                        brushStroke.brushWidth = width;
+                        brushStroke.strokeLength = length;
+                        
+                        point = [[DnaPoint alloc] initWithSize:drawingSize];
+                        point.point = NSMakePoint(x,y);
+                        brushStroke.startingPoint = point;
+                        [point release];
+                        
+                        [brushStroke calculateEndingPoint];
+                        
+                        brush = [[DnaBrush alloc] init];
+                        brush.red = red;
+                        brush.green = green;
+                        brush.blue = blue;
+                        brush.alpha = alpha;
+                        brush.brushColor = [NSColor colorWithDeviceRed:(red/255.0)
+                                                                 green:(green/255.0)
+                                                                  blue:(blue/255.0)
+                                                                 alpha:(alpha/100.0)];
+                        
+                        brushStroke.brush = brush;
+                        [brush release];
+                        
+                        [listBrushStrokes addObject:brushStroke];
+                        [brushStroke release];
+                    }
+                }
+            }
+            
+            drawing = [[[DnaDrawing alloc] initWithSize:drawingSize] autorelease];
+            drawing.listPolygons = listPolygons;
+            [listPolygons release];
+            
+            drawing.listBrushStrokes = listBrushStrokes;
+            [listBrushStrokes release];
+            
+            drawing.generation = fileGeneration;
+        }
+        
+        fclose(f);
+    }
+    
+    return drawing;
+}
+
+//******************************************************************************
+
++ (DnaDrawing*)readFromJsonFile:(NSString*)filePath {
+    NSData* data = [NSData dataWithContentsOfFile:filePath];
+    DnaDrawing* drawing = nil;
+    
+    if (data != nil) {
+        NSError* parsingError;
+        NSDictionary* dict =
+            [NSJSONSerialization JSONObjectWithData:data
+                                            options:0
+                                              error:&parsingError];
+        if (nil != dict) {
+            drawing = [DnaDrawing fromDictionary:dict];
+        }
+    }
+    
+    return drawing;
+}
+
+//******************************************************************************
+
+- (NSDictionary*)toDictionary {
+    NSMutableDictionary* dict = [[[NSMutableDictionary alloc] init] autorelease];
+    NSMutableArray* listDicts = [[NSMutableArray alloc] init];
+    for (DnaPolygon* polygon in listPolygons) {
+        [listDicts addObject:[polygon toDictionary]];
+    }
+    [dict setValue:listDicts forKey:KEY_POLYGONS];
+    [listDicts release];
+    listDicts = [[NSMutableArray alloc] init];
+    for (DnaBrushStroke* brushStroke in listBrushStrokes) {
+        [listDicts addObject:[brushStroke toDictionary]];
+    }
+    [dict setValue:listDicts forKey:KEY_BRUSH_STROKES];
+    [listDicts release];
+    [dict setValue:[NSNumber numberWithBool:isDirty] forKey:KEY_IS_DIRTY];
+    [dict setValue:NSStringFromSize(drawingSize) forKey:KEY_DRAWING_SIZE];
+    [dict setValue:[NSNumber numberWithInteger:self.generation]
+            forKey:KEY_GENERATION];
+    return dict;
+}
+
+//******************************************************************************
+
++ (DnaDrawing*)fromDictionary:(NSDictionary *)dict {
+    DnaDrawing* drawing = [[[DnaDrawing alloc] init] autorelease];
+    NSArray* listDicts = [dict valueForKey:KEY_POLYGONS];
+    NSMutableArray* listPolygons = [[NSMutableArray alloc] init];
+    for (NSDictionary* dict in listDicts) {
+        [listPolygons addObject:[DnaPolygon fromDictionary:dict]];
+    }
+    drawing.listPolygons = listPolygons;
+    [listPolygons release];
+    listDicts = [dict valueForKey:KEY_BRUSH_STROKES];
+    NSMutableArray* listBrushStrokes = [[NSMutableArray alloc] init];
+    for (NSDictionary* dict in listDicts) {
+        [listBrushStrokes addObject:[DnaBrushStroke fromDictionary:dict]];
+    }
+    drawing.listBrushStrokes = listBrushStrokes;
+    [listBrushStrokes release];
+    drawing.isDirty = [[dict valueForKey:KEY_IS_DIRTY] boolValue];
+    drawing.drawingSize = NSSizeFromString([dict valueForKey:KEY_DRAWING_SIZE]);
+    drawing.generation = [[dict valueForKey:KEY_DRAWING_SIZE] integerValue];
+    return drawing;
+}
+
+//******************************************************************************
+
+- (BOOL)isEqualToDrawing:(DnaDrawing*)other {
+    NSUInteger polyCount = [self.listPolygons count];
+    if (polyCount != [other.listPolygons count]) {
+        NSLog(@"polygonCount differs");
+        return NO;
+    }
+    
+    for (NSUInteger i = 0; i < polyCount; ++i) {
+        DnaPolygon* thisPoly = [self.listPolygons objectAtIndex:i];
+        DnaPolygon* otherPoly = [other.listPolygons objectAtIndex:i];
+        if (![thisPoly isEqualToPolygon:otherPoly]) {
+            NSLog(@"polygon differs");
+            return NO;
+        }
+    }
+    
+    NSUInteger strokeCount = [self.listBrushStrokes count];
+    if (strokeCount != [other.listBrushStrokes count]) {
+        NSLog(@"strokeCount differs");
+        return NO;
+    }
+    
+    for (NSUInteger i = 0; i < strokeCount; ++i) {
+        DnaBrushStroke* thisStroke = [self.listBrushStrokes objectAtIndex:i];
+        DnaBrushStroke* otherStroke = [other.listBrushStrokes objectAtIndex:i];
+        if (![thisStroke isEqualToBrushStroke:otherStroke]) {
+            NSLog(@"brush stroke differs");
+            return NO;
+        }
+    }
+
+    if (self.isDirty != other.isDirty) {
+        NSLog(@"isDirty differs");
+        return NO;
+    }
+    
+    if (self.generation != other.generation) {
+        NSLog(@"generation differs");
+        return NO;
+    }
+    
+    if ((self.drawingSize.height != other.drawingSize.height) ||
+        (self.drawingSize.width != other.drawingSize.width)) {
+        NSLog(@"drawingSize differs");
+        return NO;
+    }
+    
+    return YES;
 }
 
 //******************************************************************************

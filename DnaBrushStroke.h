@@ -21,19 +21,19 @@
 {
     DnaPoint* startingPoint;
     NSPoint endingPoint;
-    int angleDirection;
-    int brushWidth;
-    int strokeLength;
-    DnaBrush* _brush;
+    NSInteger angleDirection;
+    NSInteger brushWidth;
+    NSInteger strokeLength;
+    DnaBrush* brush;
     Settings* settings;
     Tools* tools;
 }
 
 @property (nonatomic,retain) DnaPoint* startingPoint;
 @property (nonatomic) NSPoint endingPoint;
-@property (nonatomic) int angleDirection;
-@property (nonatomic) int brushWidth;
-@property (nonatomic) int strokeLength;
+@property (nonatomic) NSInteger angleDirection;
+@property (nonatomic) NSInteger brushWidth;
+@property (nonatomic) NSInteger strokeLength;
 @property (nonatomic,retain) DnaBrush* brush;
 
 - (id)initWithSize:(NSSize)theDrawingSize;
@@ -41,5 +41,10 @@
 
 - (void)mutate:(DnaDrawing*)drawing;
 - (void)calculateEndingPoint;
+
+- (NSDictionary*)toDictionary;
++ (DnaBrushStroke*)fromDictionary:(NSDictionary*)dict;
+
+- (BOOL)isEqualToBrushStroke:(DnaBrushStroke*)other;
 
 @end

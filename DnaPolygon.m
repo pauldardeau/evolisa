@@ -18,6 +18,10 @@
 #define PI 3.14159265
 
 
+static NSString* KEY_POINTS = @"points";
+static NSString* KEY_BRUSH = @"brush";
+
+
 @implementation DnaPolygon
 
 @synthesize listPoints;
@@ -30,8 +34,8 @@
     if (self) {
         settings = [Settings instance];
         tools = [Tools instance];
-        self.listPoints = [aDecoder decodeObjectForKey:@"listPoints"];
-        self.brush = [aDecoder decodeObjectForKey:@"brush"];
+        self.listPoints = [aDecoder decodeObjectForKey:KEY_POINTS];
+        self.brush = [aDecoder decodeObjectForKey:KEY_BRUSH];
     }
     
     return self;
@@ -40,8 +44,8 @@
 //******************************************************************************
 
 - (void)encodeWithCoder:(NSCoder*)aCoder {
-    [aCoder encodeObject:listPoints forKey:@"listPoints"];
-    [aCoder encodeObject:brush forKey:@"brush"];
+    [aCoder encodeObject:listPoints forKey:KEY_POINTS];
+    [aCoder encodeObject:brush forKey:KEY_BRUSH];
 }
 
 //******************************************************************************
@@ -494,6 +498,67 @@
     for (DnaPoint* point in listPoints) {
         [point setSize:drawingSize];
     }
+}
+
+//******************************************************************************
+
+- (NSDictionary*)toDictionary {
+    NSMutableDictionary* dict = [[[NSMutableDictionary alloc] init] autorelease];
+    NSMutableArray* listDicts = [[NSMutableArray alloc] init];
+    for (DnaPoint* point in listPoints) {
+        [listDicts addObject:[point toDictionary]];
+    }
+    [dict setValue:listDicts forKey:KEY_POINTS];
+    [listDicts release];
+    [dict setValue:[brush toDictionary] forKey:KEY_BRUSH];
+    return dict;
+}
+
+//******************************************************************************
+
++ (DnaPolygon*)fromDictionary:(NSDictionary *)dict {
+    NSArray* listDicts = [dict valueForKey:KEY_POINTS];
+    DnaBrush* brush = [DnaBrush fromDictionary:[dict valueForKey:KEY_BRUSH]];
+    if ([listDicts count] > 0 && nil != brush) {
+        DnaPolygon* polygon = [[[DnaPolygon alloc] init] autorelease];
+        NSMutableArray* listPoints = [[NSMutableArray alloc] init];
+        for (NSDictionary* dict in listDicts) {
+            [listPoints addObject:[DnaPoint fromDictionary:dict]];
+        }
+        polygon.listPoints = listPoints;
+        [listPoints release];
+        polygon.brush = brush;
+        return polygon;
+    } else {
+        return nil;
+    }
+}
+
+//******************************************************************************
+
+- (BOOL)isEqualToPolygon:(DnaPolygon*)other {
+    //TODO: implement isEqualToPolygon
+    NSUInteger pointCount = [self.listPoints count];
+    if (pointCount != [other.listPoints count]) {
+        NSLog(@"pointCount differs");
+        return NO;
+    }
+    
+    for (NSUInteger i = 0; i < pointCount; ++i) {
+        DnaPoint* thisPoint = [self.listPoints objectAtIndex:i];
+        DnaPoint* otherPoint = [other.listPoints objectAtIndex:i];
+        if (![thisPoint isEqualToPoint:otherPoint]) {
+            NSLog(@"point differs");
+            return NO;
+        }
+    }
+    
+    if (![self.brush isEqualToBrush:other.brush]) {
+        NSLog(@"brush differs");
+        return NO;
+    }
+    
+    return YES;
 }
 
 //******************************************************************************

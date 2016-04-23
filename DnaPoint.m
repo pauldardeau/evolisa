@@ -14,6 +14,10 @@
 #define MAX_ZERO_TRIES  5
 
 
+static NSString* KEY_POINT = @"point";
+static NSString* KEY_SIZE = @"drawingSize";
+
+
 @implementation DnaPoint
 
 @synthesize point;
@@ -27,8 +31,8 @@
         tools = nil;
         //settings = [Settings instance];
         //tools = [Tools instance];
-        point = [aDecoder decodePointForKey:@"point"];
-        drawingSize = [aDecoder decodeSizeForKey:@"drawingSize"];
+        point = [aDecoder decodePointForKey:KEY_POINT];
+        drawingSize = [aDecoder decodeSizeForKey:KEY_SIZE];
     }
     
     return self;
@@ -37,8 +41,8 @@
 //******************************************************************************
 
 - (void)encodeWithCoder:(NSCoder*)aCoder {
-    [aCoder encodePoint:point forKey:@"point"];
-    [aCoder encodeSize:drawingSize forKey:@"drawingSize"];
+    [aCoder encodePoint:point forKey:KEY_POINT];
+    [aCoder encodeSize:drawingSize forKey:KEY_SIZE];
 }
 
 //******************************************************************************
@@ -181,6 +185,45 @@
    
     self.point = NSMakePoint(x, y);
     drawingSize = theDrawingSize;
+}
+
+//******************************************************************************
+
+- (NSDictionary*)toDictionary {
+    NSMutableDictionary* dict = [[[NSMutableDictionary alloc] init] autorelease];
+    [dict setValue:NSStringFromPoint(point) forKey:KEY_POINT];
+    [dict setValue:NSStringFromSize(drawingSize) forKey:KEY_SIZE];
+    return dict;
+}
+
+//******************************************************************************
+
++ (DnaPoint*)fromDictionary:(NSDictionary *)dict {
+    DnaPoint* dna_point = nil;
+    
+    NSString* s = [dict valueForKey:KEY_SIZE];
+    if ([s length] > 0) {
+        NSSize drawingSize = NSSizeFromString(s);
+        s = [dict valueForKey:KEY_POINT];
+        if ([s length] > 0 ) {
+            dna_point = [[[DnaPoint alloc] initWithSize:drawingSize] autorelease];
+            dna_point.point = NSPointFromString(s);
+        }
+    }
+    
+    return dna_point;
+}
+
+//******************************************************************************
+
+- (BOOL)isEqualToPoint:(DnaPoint*)other {
+    if ((self.point.x != other.point.x) ||
+        (self.point.y != other.point.y)) {
+        NSLog(@"NSPoint differs");
+        return NO;
+    }
+    
+    return YES;
 }
 
 //******************************************************************************

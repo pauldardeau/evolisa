@@ -20,6 +20,13 @@
 #define DEGREES_TO_RADIANS(degrees)degrees*PI/180.0
 
 
+static NSString* KEY_STARTING_POINT = @"startingPoint";
+static NSString* KEY_ENDING_POINT = @"endingPoint";
+static NSString* KEY_ANGLE_DIRECTION = @"angleDirection";
+static NSString* KEY_BRUSH_WIDTH = @"brushWidth";
+static NSString* KEY_STROKE_LENGTH = @"strokeLength";
+static NSString* KEY_BRUSH = @"brush";
+
 static const int MIN_BRUSH_WIDTH = 2;
 static const int MAX_BRUSH_WIDTH = 15;
 static const int MIN_STROKE_LENGTH = 5;
@@ -54,11 +61,12 @@ static const int MAX_STROKE_LENGTH = 30;
     if (self) {
         settings = [Settings instance];
         tools = [Tools instance];
-        self.startingPoint = [aDecoder decodeObjectForKey:@"startingPoint"];
-        self.angleDirection = [aDecoder decodeIntForKey:@"angleDirection"];
-        self.brushWidth = [aDecoder decodeIntForKey:@"brushWidth"];
-        self.strokeLength = [aDecoder decodeIntForKey:@"strokeLength"];
-        self.brush = [aDecoder decodeObjectForKey:@"brush"];
+        self.startingPoint = [aDecoder decodeObjectForKey:KEY_STARTING_POINT];
+        self.endingPoint = NSPointFromString([aDecoder decodeObjectForKey:KEY_ENDING_POINT]);
+        self.angleDirection = [aDecoder decodeIntegerForKey:KEY_ANGLE_DIRECTION];
+        self.brushWidth = [aDecoder decodeIntegerForKey:KEY_BRUSH_WIDTH];
+        self.strokeLength = [aDecoder decodeIntegerForKey:KEY_STROKE_LENGTH];
+        self.brush = [aDecoder decodeObjectForKey:KEY_BRUSH];
         
         [self calculateEndingPoint];
     }
@@ -69,11 +77,12 @@ static const int MAX_STROKE_LENGTH = 30;
 //******************************************************************************
 
 - (void)encodeWithCoder:(NSCoder*)aCoder {
-    [aCoder encodeObject:self.startingPoint forKey:@"startingPoint"];
-    [aCoder encodeInt:angleDirection forKey:@"angleDirection"];
-    [aCoder encodeInt:brushWidth forKey:@"brushWidth"];
-    [aCoder encodeInt:strokeLength forKey:@"strokeLength"];
-    [aCoder encodeObject:self.brush forKey:@"brush"];
+    [aCoder encodeObject:self.startingPoint forKey:KEY_STARTING_POINT];
+    [aCoder encodeObject:NSStringFromPoint(self.endingPoint) forKey:KEY_ENDING_POINT];
+    [aCoder encodeInteger:angleDirection forKey:KEY_ANGLE_DIRECTION];
+    [aCoder encodeInteger:brushWidth forKey:KEY_BRUSH_WIDTH];
+    [aCoder encodeInteger:strokeLength forKey:KEY_STROKE_LENGTH];
+    [aCoder encodeObject:self.brush forKey:KEY_BRUSH];
 }
 
 //******************************************************************************
@@ -240,6 +249,70 @@ static const int MAX_STROKE_LENGTH = 30;
         self.endingPoint = NSMakePoint(startingPoint.point.x + x,
                                        startingPoint.point.y - y);
     }
+}
+
+//******************************************************************************
+
+- (NSDictionary*)toDictionary {
+    NSMutableDictionary* dict = [[[NSMutableDictionary alloc] init] autorelease];
+    [dict setValue:[startingPoint toDictionary] forKey:KEY_STARTING_POINT];
+    [dict setValue:NSStringFromPoint(endingPoint) forKey:KEY_ENDING_POINT];
+    [dict setValue:[NSNumber numberWithInteger:angleDirection] forKey:KEY_ANGLE_DIRECTION];
+    [dict setValue:[NSNumber numberWithInteger:brushWidth] forKey:KEY_BRUSH_WIDTH];
+    [dict setValue:[NSNumber numberWithInteger:strokeLength] forKey:KEY_STROKE_LENGTH];
+    [dict setValue:[brush toDictionary] forKey:KEY_BRUSH];
+    return dict;
+}
+
+//******************************************************************************
+
++ (DnaBrushStroke*)fromDictionary:(NSDictionary *)dict {
+    DnaBrushStroke* brushStroke = [[[DnaBrushStroke alloc] init] autorelease];
+    brushStroke.startingPoint =
+        [DnaPoint fromDictionary:[dict valueForKey:KEY_STARTING_POINT]];
+    brushStroke.endingPoint = NSPointFromString([dict valueForKey:KEY_ENDING_POINT]);
+    brushStroke.angleDirection = [[dict valueForKey:KEY_ANGLE_DIRECTION] integerValue];
+    brushStroke.brushWidth = [[dict valueForKey:KEY_BRUSH_WIDTH] integerValue];
+    brushStroke.strokeLength = [[dict valueForKey:KEY_STROKE_LENGTH] integerValue];
+    brushStroke.brush = [DnaBrush fromDictionary:[dict valueForKey:KEY_BRUSH]];
+    return brushStroke;
+}
+
+//******************************************************************************
+
+- (BOOL)isEqualToBrushStroke:(DnaBrushStroke*)other {
+    if (![self.startingPoint isEqualToPoint:other.startingPoint]) {
+        NSLog(@"startingPoint differs");
+        return NO;
+    }
+    
+    if ((self.endingPoint.x != other.endingPoint.x) ||
+        (self.endingPoint.y != other.endingPoint.y)) {
+        NSLog(@"endingPoint differs");
+        return NO;
+    }
+    
+    if (self.angleDirection != other.angleDirection) {
+        NSLog(@"angleDirection differs");
+        return NO;
+    }
+    
+    if (self.brushWidth != other.brushWidth) {
+        NSLog(@"brushWidth differs");
+        return NO;
+    }
+    
+    if (self.strokeLength != other.strokeLength) {
+        NSLog(@"strokeLength differs");
+        return NO;
+    }
+    
+    if (![self.brush isEqualToBrush:other.brush]) {
+        NSLog(@"brush differs");
+        return NO;
+    }
+    
+    return YES;
 }
 
 //******************************************************************************

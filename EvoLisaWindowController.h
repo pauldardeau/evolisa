@@ -44,7 +44,7 @@ typedef struct
     DnaDrawing* currentDrawing;
     DnaDrawing* updatedDrawing;
     NSSize drawingSize;
-    int generation;
+    NSInteger generation;
     int selected;
     BOOL isRunning;
     RGBA* sourceChannelData;

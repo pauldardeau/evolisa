@@ -12,6 +12,13 @@
 #import "Tools.h"
 
 
+static NSString* KEY_BRUSH_COLOR = @"brushColor";
+static NSString* KEY_RED = @"red";
+static NSString* KEY_GREEN = @"green";
+static NSString* KEY_BLUE = @"blue";
+static NSString* KEY_ALPHA = @"alpha";
+
+
 @implementation DnaBrush
 
 @synthesize brushColor;
@@ -27,11 +34,11 @@
     if (self) {
         settings = [Settings instance];
         tools = [Tools instance];
-        self.brushColor = [aDecoder decodeObjectForKey:@"brushColor"];
-        red = [aDecoder decodeIntForKey:@"red"];
-        green = [aDecoder decodeIntForKey:@"green"];
-        blue = [aDecoder decodeIntForKey:@"blue"];
-        alpha = [aDecoder decodeIntForKey:@"alpha"];
+        self.brushColor = [aDecoder decodeObjectForKey:KEY_BRUSH_COLOR];
+        red = [aDecoder decodeIntForKey:KEY_RED];
+        green = [aDecoder decodeIntForKey:KEY_GREEN];
+        blue = [aDecoder decodeIntForKey:KEY_BLUE];
+        alpha = [aDecoder decodeIntForKey:KEY_ALPHA];
         
         if (!brushColor) {
             self.brushColor =
@@ -48,11 +55,11 @@
 //******************************************************************************
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
-    [aCoder encodeObject:brushColor forKey:@"brushColor"];
-    [aCoder encodeInt:red forKey:@"red"];
-    [aCoder encodeInt:green forKey:@"green"];
-    [aCoder encodeInt:blue forKey:@"blue"];
-    [aCoder encodeInt:alpha forKey:@"alpha"];
+    [aCoder encodeObject:brushColor forKey:KEY_BRUSH_COLOR];
+    [aCoder encodeInteger:red forKey:KEY_RED];
+    [aCoder encodeInteger:green forKey:KEY_GREEN];
+    [aCoder encodeInteger:blue forKey:KEY_BLUE];
+    [aCoder encodeInteger:alpha forKey:KEY_ALPHA];
 }
 
 //******************************************************************************
@@ -149,6 +156,70 @@
                                    blue:(blue/255.0)
                                   alpha:(alpha/100.0)];
     }
+}
+
+//******************************************************************************
+
+- (NSDictionary*)toDictionary {
+    NSMutableDictionary* dict = [[[NSMutableDictionary alloc] init] autorelease];
+    NSString* colorAsString = [NSString stringWithFormat:@"%d:%d:%d:%d",
+                               (int) (brushColor.redComponent * 255),
+                               (int) (brushColor.greenComponent * 255),
+                               (int) (brushColor.blueComponent * 255),
+                               (int) (brushColor.alphaComponent * 100)];
+    [dict setValue:colorAsString forKey:KEY_BRUSH_COLOR];
+    return dict;
+}
+
+//******************************************************************************
+
++ (DnaBrush*)fromDictionary:(NSDictionary *)dict {
+    NSString* stringColor = [dict valueForKey:KEY_BRUSH_COLOR];
+    if (nil != stringColor) {
+        DnaBrush* brush = [[[DnaBrush alloc] init] autorelease];
+        NSColor* brushColor;
+        int components[4];
+        NSArray* chunks = [stringColor componentsSeparatedByString:@":"];
+        
+        if ([chunks count] != 4) {
+            brushColor = [NSColor blackColor];
+        } else {
+            for (int i = 0; i < 4; i++) {
+                components[i] = [[chunks objectAtIndex:i] intValue];
+            }
+            brushColor = [NSColor colorWithDeviceRed:components[0]/255.0
+                                               green:components[1]/255.0
+                                                blue:components[2]/255.0
+                                               alpha:components[3]/100.0];
+        }
+        brush.brushColor = brushColor;
+        brush.red = components[0];
+        brush.green = components[1];
+        brush.blue = components[2];
+        brush.alpha = components[3];
+        return brush;
+    } else {
+        return nil;
+    }
+}
+
+//******************************************************************************
+
+- (BOOL)isEqualToBrush:(DnaBrush*)other {
+    NSInteger alphaDelta = labs(self.alpha - other.alpha);
+    if ((self.red != other.red) ||
+        (self.green != other.green) ||
+        (self.blue != other.blue) ||
+        (alphaDelta > 1)) {
+        NSLog(@"DnaBrush: color differs");
+        NSLog(@"r: self=%ld, other=%ld", self.red, other.red);
+        NSLog(@"g: self=%ld, other=%ld", self.green, other.green);
+        NSLog(@"b: self=%ld, other=%ld", self.blue, other.blue);
+        NSLog(@"a: self=%ld, other=%ld", self.alpha, other.alpha);
+        return NO;
+    }
+    
+    return YES;
 }
 
 //******************************************************************************

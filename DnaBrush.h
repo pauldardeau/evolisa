@@ -19,21 +19,26 @@
     NSColor* brushColor;
     Settings* settings;
     Tools* tools;
-    int red;
-    int green;
-    int blue;
-    int alpha;
+    NSInteger red;
+    NSInteger green;
+    NSInteger blue;
+    NSInteger alpha;
 }
 
 @property (nonatomic,retain) NSColor* brushColor;
-@property (nonatomic) int red;
-@property (nonatomic) int green;
-@property (nonatomic) int blue;
-@property (nonatomic) int alpha;
+@property (nonatomic) NSInteger red;
+@property (nonatomic) NSInteger green;
+@property (nonatomic) NSInteger blue;
+@property (nonatomic) NSInteger alpha;
 
 
 - (DnaBrush*)initAsCloneFromBrush:(DnaBrush*)cloneFrom;
 
 - (void)mutate:(DnaDrawing*)drawing;
+
+- (NSDictionary*)toDictionary;
++ (DnaBrush*)fromDictionary:(NSDictionary*)dict;
+
+- (BOOL)isEqualToBrush:(DnaBrush*)other;
 
 @end

@@ -254,18 +254,15 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
 //******************************************************************************
 
 - (IBAction)generateButtonClicked:(id)sender {
-    NSLog(@"generate clicked");
     isRunning = YES;
     [stopButton setEnabled:YES];
     [generateButton setEnabled:NO];
-   
     [self startGeneration];
 }
 
 //******************************************************************************
 
 - (IBAction)stopButtonClicked:(id)sender {
-    NSLog(@"stop clicked");
     isRunning = NO;
     [stopButton setEnabled:NO];
     [generateButton setEnabled:YES];
@@ -274,240 +271,21 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
 //******************************************************************************
 
 - (IBAction)saveButtonClicked:(id)sender {
-    
-    NSLog(@"save clicked");
-   
-    NSString* pathToSaveFile =
-        [NSString stringWithFormat:@"%@/evolisa.txt", self.userHomeDir];
-   
-    FILE* f = fopen([pathToSaveFile UTF8String], "wt");
-   
-    if (f != NULL) {
-        NSUInteger numPolygons = [currentDrawing.listPolygons count];
-
-        fprintf(f, "width=%d\n", sourceImageWidth);
-        fprintf(f, "height=%d\n", sourceImageHeight);
-        fprintf(f, "generation=%d\n", selected);
-        fprintf(f, "polygonCount=%ld\n", numPolygons);
-        DnaBrush* brush;
-        NSUInteger numPoints;
-        int x;
-        int y;
-      
-        for (DnaPolygon* polygon in currentDrawing.listPolygons) {
-            brush = polygon.brush;
-         
-            numPoints = [polygon.listPoints count];
-            fprintf(f, "pointCount=%ld", numPoints);
-            fprintf(f, ";r=%d,g=%d,b=%d,a=%d",
-                    brush.red, brush.green, brush.blue, brush.alpha);
-         
-            for (DnaPoint* point in polygon.listPoints) {
-                x = (int) point.point.x;
-                y = (int) point.point.y;
-            
-                fprintf(f, ";x=%d,y=%d", x, y);
-            }
-
-            fprintf(f, "\n");
-        }
-       
-        NSUInteger numBrushStrokes = [currentDrawing.listBrushStrokes count];
-        fprintf(f,"brushStrokeCount=%ld\n", numBrushStrokes);
-       
-        for (DnaBrushStroke* brushStroke in currentDrawing.listBrushStrokes) {
-            brush = brushStroke.brush;
-           
-            fprintf(f, "r=%d,g=%d,b=%d,a=%d",
-                    brush.red,
-                    brush.green,
-                    brush.blue,
-                    brush.alpha);
-            x = (int) brushStroke.startingPoint.point.x;
-            y = (int) brushStroke.startingPoint.point.y;
-            fprintf(f, ";x=%d,y=%d", x, y);
-            fprintf(f, ";angle=%d;width=%d;length=%d",
-                    brushStroke.angleDirection,
-                    brushStroke.brushWidth,
-                    brushStroke.strokeLength);
-           
-            fprintf(f, "\n");
-        }
-      
-        fclose(f);
-    }
+    NSString* pathToFile =
+        [NSString stringWithFormat:@"%@/evolisa.json", self.userHomeDir];
+    [currentDrawing saveToJsonFile:pathToFile];
 }
 
 //******************************************************************************
 
 - (IBAction)loadButtonClicked:(id)sender {
-
-    NSLog(@"load clicked");
-   
-    NSString* pathToSaveFile =
-        [NSString stringWithFormat:@"%@/evolisa.txt", self.userHomeDir];
-
-    FILE* f = fopen([pathToSaveFile UTF8String], "rt");
-   
-    if (f != NULL) {
-        int fileWidth = 0;
-        int fileHeight = 0;
-        int fileGeneration = 0;
-        int filePolygonCount = 0;
-        int fileBrushStrokeCount = 0;
-        char lineBuffer[2048];
-        NSMutableArray* listPolygons = nil;
-        NSMutableArray* listPoints;
-        NSMutableArray* listBrushStrokes = nil;
-      
-        fgets(lineBuffer, 2047, f);
-        sscanf(lineBuffer, "width=%d\n", &fileWidth);
-      
-        //TODO: temporary hack
-        //fileWidth = 200;
-      
-        fgets(lineBuffer, 2047, f);
-        sscanf(lineBuffer, "height=%d\n", &fileHeight);
-      
-        //TODO: temporary hack
-        //fileHeight = 200;
-      
-        fgets(lineBuffer, 2047, f);
-        sscanf(lineBuffer, "generation=%d\n", &fileGeneration);
-
-        fgets(lineBuffer, 2047, f);
-        sscanf(lineBuffer, "polygonCount=%d\n", &filePolygonCount);
-        const int numPolygons = filePolygonCount;
-      
-        if (numPolygons > 0) {
-            listPolygons = [[NSMutableArray alloc] initWithCapacity:numPolygons];
-         
-            DnaPolygon* polygon;
-            DnaPoint* point;
-            DnaBrush* brush;
-            int numPoints = 0;
-            int x = 0;
-            int y = 0;
-            int red = 0;
-            int green = 0;
-            int blue = 0;
-            int alpha = 0;
-            int angle = 0;
-            int width = 0;
-            int length = 0;
-      
-            const char* pszCurrent;
-      
-      
-            for (int i = 0; i < numPolygons; ++i) {
-                fgets(lineBuffer, 2047, f);
-                sscanf(lineBuffer, "pointCount=%d;", &numPoints);
-         
-                if (numPoints > 0) {
-                    listPoints =
-                        [[NSMutableArray alloc] initWithCapacity:numPoints];
-               
-                    pszCurrent = strchr(lineBuffer, ';') + 1;
-                    sscanf(pszCurrent, "r=%d,g=%d,b=%d,a=%d",
-                           &red, &green, &blue, &alpha);
-                    pszCurrent = strchr(pszCurrent, ';') + 1;
-               
-                    polygon = [[DnaPolygon alloc] initWithSize:drawingSize];
-               
-                    brush = [[DnaBrush alloc] init];
-                    brush.red = red;
-                    brush.green = green;
-                    brush.blue = blue;
-                    brush.alpha = alpha;
-                    brush.brushColor = [NSColor colorWithDeviceRed:(red/255.0)
-                                                             green:(green/255.0)
-                                                              blue:(blue/255.0)
-                                                             alpha:(alpha/100.0)];
-               
-                    polygon.brush = brush;
-                    [brush release];
-
-                    for (int j = 0; j < numPoints; ++j) {
-                        sscanf(pszCurrent, "x=%d,y=%d", &x, &y);
-                        pszCurrent = strchr(pszCurrent, ';') + 1;
-               
-                        point = [[DnaPoint alloc] initWithSize:drawingSize];
-                        point.point = NSMakePoint(x,y);
-                        [listPoints addObject:point];
-                        [point release];
-                    }
-               
-                    polygon.listPoints = listPoints;
-                    [listPoints release];
-               
-                    [listPolygons addObject:polygon];
-                    [polygon release];
-                }
-            }
-         
-            fgets(lineBuffer, 2047, f);
-            sscanf(lineBuffer, "brushStrokeCount=%d\n", &fileBrushStrokeCount);
-            const int numBrushStrokes = fileBrushStrokeCount;
-          
-            if (numBrushStrokes > 0) {
-                listBrushStrokes =
-                    [[NSMutableArray alloc] initWithCapacity:numBrushStrokes];
-
-                for (int i = 0; i < numBrushStrokes; ++i) {
-                    fgets(lineBuffer, 2047, f);
-                  
-                    if (9 == sscanf(lineBuffer,
-                                    "r=%d,g=%d,b=%d,a=%d;x=%d,y=%d;angle=%d;width=%d;length=%d",
-                                    &red, &green, &blue, &alpha,
-                                    &x, &y,
-                                    &angle,
-                                    &width,
-                                    &length)) {
-                        DnaBrushStroke* brushStroke = [[DnaBrushStroke alloc] init];
-                        brushStroke.angleDirection = angle;
-                        brushStroke.brushWidth = width;
-                        brushStroke.strokeLength = length;
-                  
-                        point = [[DnaPoint alloc] initWithSize:drawingSize];
-                        point.point = NSMakePoint(x,y);
-                        brushStroke.startingPoint = point;
-                        [point release];
-                      
-                        [brushStroke calculateEndingPoint];
-                  
-                        brush = [[DnaBrush alloc] init];
-                        brush.red = red;
-                        brush.green = green;
-                        brush.blue = blue;
-                        brush.alpha = alpha;
-                        brush.brushColor = [NSColor colorWithDeviceRed:(red/255.0)
-                                                                 green:(green/255.0)
-                                                                  blue:(blue/255.0)
-                                                                 alpha:(alpha/100.0)];
-                  
-                        brushStroke.brush = brush;
-                        [brush release];
-                  
-                        [listBrushStrokes addObject:brushStroke];
-                        [brushStroke release];
-                    }
-                }
-            }
-
-            DnaDrawing* fileDrawing = [[DnaDrawing alloc] initWithSize:drawingSize];
-            fileDrawing.listPolygons = listPolygons;
-            [listPolygons release];
-          
-            fileDrawing.listBrushStrokes = listBrushStrokes;
-            [listBrushStrokes release];
-         
-            self.currentDrawing = fileDrawing;
-            [fileDrawing release];
-            selected = fileGeneration;
-            generation = fileGeneration;
-        }
-      
-        fclose(f);
+    NSString* pathToFile =
+        [NSString stringWithFormat:@"%@/evolisa.json", self.userHomeDir];
+    self.currentDrawing = [DnaDrawing readFromJsonFile:pathToFile];
+    if (nil != self.currentDrawing) {
+        generation = self.currentDrawing.generation;
+    } else {
+        generation = 0;
     }
 }
 
@@ -562,9 +340,10 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
     double resultsArray[500];
     memset(resultsArray, 0, sizeof(resultsArray));
     __block double* results = resultsArray;
+    dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
     
     if (4 == samplesPerPixel) {
-        dispatch_apply(sourceImageHeight, dispatch_get_global_queue(0, 0), ^(size_t row){
+        dispatch_apply(sourceImageHeight, queue, ^(size_t row){
             const size_t rowOffset = sourceImageWidth * row;
             const size_t rgbaOffset = rowOffset;  //row * sourceImageWidth;
             RGBA* rgba = sourceChannelData + rgbaOffset;
@@ -585,7 +364,7 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
             results[row] = rowFitness;
         });
     } else if (3 == samplesPerPixel) {
-        dispatch_apply(sourceImageHeight, dispatch_get_global_queue(0, 0), ^(size_t row){
+        dispatch_apply(sourceImageHeight, queue, ^(size_t row){
             const size_t rowOffset = sourceImageWidth * row;
             const size_t rgbaOffset = rowOffset;  //row * sourceImageWidth;
             RGBA* rgba = sourceChannelData + rgbaOffset;

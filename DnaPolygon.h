@@ -35,5 +35,9 @@
 
 - (void)setSize:(NSSize)drawingSize;
 
+- (NSDictionary*)toDictionary;
++ (DnaPolygon*)fromDictionary:(NSDictionary*)dict;
+
+- (BOOL)isEqualToPolygon:(DnaPolygon*)other;
 
 @end
