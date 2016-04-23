@@ -78,7 +78,6 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
 @implementation EvoLisaWindowController
 
 @synthesize currentDrawing;
-@synthesize updatedDrawing;
 @synthesize userHomeDir;
 
 //******************************************************************************
@@ -212,7 +211,6 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
 - (void)dealloc {
     [sourceImageRep release];
     self.currentDrawing = nil;
-    self.updatedDrawing = nil;
     self.userHomeDir = nil;
     free(sourceChannelData);
     [super dealloc];
@@ -243,7 +241,7 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
     }
    
     if (isRunning) {
-        [NSTimer scheduledTimerWithTimeInterval:0.0001
+        [NSTimer scheduledTimerWithTimeInterval:0.00001
                                          target:self
                                        selector:@selector(startGeneration)
                                        userInfo:nil
@@ -693,9 +691,11 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
         bestFitnessSoFar = fitness;
       
         if (usingOpenGL) {
-            self.currentDrawing = glDrawingCanvas.drawing;
+            self.currentDrawing =
+                [[DnaDrawing alloc] initAsCloneFromDrawing:glDrawingCanvas.drawing];
         } else {
-            self.currentDrawing = drawingCanvas.drawing;
+            self.currentDrawing =
+                [[DnaDrawing alloc] initAsCloneFromDrawing:drawingCanvas.drawing];
         }
     }
    

@@ -42,7 +42,6 @@ typedef struct
     unsigned long long bestFitnessSoFar;
     BOOL haveAFitnessScore;
     DnaDrawing* currentDrawing;
-    DnaDrawing* updatedDrawing;
     NSSize drawingSize;
     NSInteger generation;
     int selected;
@@ -54,7 +53,6 @@ typedef struct
 }
 
 @property (nonatomic,retain) DnaDrawing* currentDrawing;
-@property (nonatomic,retain) DnaDrawing* updatedDrawing;
 @property (nonatomic,retain) NSString* userHomeDir;
 
 - (IBAction)generateButtonClicked:(id)sender;
