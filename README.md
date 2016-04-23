@@ -25,7 +25,7 @@ The OpenGL drawing is significantly faster than the Cocoa drawing.
 
 Serialization
 -------------
-**Very** hacky (and broken) and done as ASCII files. It needs a major overhaul.
+Uses JSON by default. Still contains **very** hacky (and broken) original ASCII file serialization (need to fix or remove).
 
 Optimizations
 -------------
