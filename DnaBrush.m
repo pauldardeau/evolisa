@@ -179,6 +179,7 @@ static NSString* KEY_ALPHA = @"alpha";
         DnaBrush* brush = [[[DnaBrush alloc] init] autorelease];
         NSColor* brushColor;
         int components[4];
+        memset(components, 0,  sizeof(components));
         NSArray* chunks = [stringColor componentsSeparatedByString:@":"];
         
         if ([chunks count] != 4) {
