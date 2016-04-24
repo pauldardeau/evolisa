@@ -221,31 +221,33 @@ void AlignData(unsigned char *input, vector unsigned char *output) {
 - (void)startGeneration {
     const int numIterations = 1;
    
-    for (int i = 0; i < numIterations; ++i) {
-        DnaDrawing* aNewDrawing =
-            [[DnaDrawing alloc] initAsCloneFromDrawing:currentDrawing];
-        [aNewDrawing mutate];
+    @autoreleasepool {
+        for (int i = 0; i < numIterations; ++i) {
+            DnaDrawing* aNewDrawing =
+                [[DnaDrawing alloc] initAsCloneFromDrawing:currentDrawing];
+            [aNewDrawing mutate];
       
-        if (aNewDrawing.isDirty) {
-            ++generation;
-            if (usingOpenGL) {
-                glDrawingCanvas.drawing = aNewDrawing;
-                [glDrawingCanvas display];
-            } else {
-                drawingCanvas.drawing = aNewDrawing;
-                [drawingCanvas setNeedsDisplay:YES];
+            if (aNewDrawing.isDirty) {
+                ++generation;
+                if (usingOpenGL) {
+                    glDrawingCanvas.drawing = aNewDrawing;
+                    [glDrawingCanvas display];
+                } else {
+                    drawingCanvas.drawing = aNewDrawing;
+                    [drawingCanvas setNeedsDisplay:YES];
+                }
             }
-        }
       
-        [aNewDrawing release];
-    }
+            [aNewDrawing release];
+        }
    
-    if (isRunning) {
-        [NSTimer scheduledTimerWithTimeInterval:0.00001
-                                         target:self
-                                       selector:@selector(startGeneration)
-                                       userInfo:nil
-                                        repeats:NO];
+        if (isRunning) {
+            [NSTimer scheduledTimerWithTimeInterval:0.00001
+                                             target:self
+                                           selector:@selector(startGeneration)
+                                           userInfo:nil
+                                            repeats:NO];
+        }
     }
 }
 
