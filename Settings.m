@@ -15,7 +15,7 @@ static const int MAX_COLOR_INTENSITY = 216;  // 85%
 static const int MIN_ALPHA = 20;
 static const int MAX_ALPHA = 70;
 
-static const int MIN_POLYGONS = 50;
+static const int MIN_POLYGONS = 150;
 static const int MAX_POLYGONS = 650;
 
 static Settings* instance = nil;
